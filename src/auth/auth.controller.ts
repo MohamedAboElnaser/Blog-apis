@@ -5,20 +5,22 @@ import { VerifyEmailDTO } from './dto/verify-email-dto';
 import { LoginDTO } from './dto/login-dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { AuthService } from './auth.service';
+import { UserService } from 'src/user/user.service';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
   @Post('/register')
   @FormDataRequest()
   register(
     @Body(new ValidationPipe())
     body: RegisterDTO,
   ) {
-    return {
-      message: 'user register successfully',
-      body,
-    };
+    return this.userService.add({ ...body } as User);
   }
   @Post('/verify-email')
   @FormDataRequest()
