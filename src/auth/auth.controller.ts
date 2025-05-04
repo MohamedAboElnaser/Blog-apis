@@ -1,12 +1,16 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { ValidationPipe } from '../utils/validation-pipe';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  UsePipes,
+} from '@nestjs/common';
 import { RegisterDTO } from './dto/register-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
 import { LoginDTO } from './dto/login-dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -16,22 +20,31 @@ export class AuthController {
   ) {}
   @Post('/register')
   @FormDataRequest()
-  register(
-    @Body(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async register(
+    @Body()
     body: RegisterDTO,
   ) {
-    return this.userService.add({ ...body } as User);
+    const user = await this.userService.add(body);
+    return {
+      message: `User registered successfully , Check ${user.email} for Verification code`,
+      user,
+    };
   }
   @Post('/verify-email')
   @FormDataRequest()
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   verify(@Body(new ValidationPipe()) body: VerifyEmailDTO) {
-    console.log('Body obj,', body);
     return this.authService.verify(body.email);
   }
 
   @Post('/login')
   @FormDataRequest()
-  login(@Body(new ValidationPipe()) body: LoginDTO) {
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  login(
+    @Body()
+    body: LoginDTO,
+  ) {
     return this.authService.login(body);
   }
 }
