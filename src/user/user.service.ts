@@ -8,12 +8,16 @@ import { RegisterDTO } from 'src/auth/dto/register-dto';
 import { User } from './entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing.service';
+import { OtpService } from 'src/otp/otp.service';
+import { Otp } from 'src/otp/entities/otp.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(Otp) private otpRepository: Repository<Otp>,
     private readonly hashService: HashingService,
+    private otpService: OtpService,
   ) {}
   async add(data: RegisterDTO) {
     try {
@@ -21,6 +25,16 @@ export class UserService {
       const userInstance = this.usersRepository.create(data);
       const user = await this.usersRepository.save(userInstance);
       const { password, ...result } = user;
+      // TODO generate otp
+      const otp = this.otpService.generateOtp(6);
+
+      //create otp record
+      await this.otpRepository.save({ code: otp, email: data.email });
+
+      //TODO delete this line after implementing email service
+      console.log(`Generated otp for ${user.email} : ${otp}`);
+
+      // TODO send the otp via email to the client
       return result;
     } catch (error) {
       if (error instanceof QueryFailedError) {
