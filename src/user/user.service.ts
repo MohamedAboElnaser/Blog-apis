@@ -7,17 +7,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RegisterDTO } from 'src/auth/dto/register-dto';
 import { User } from './entities/user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
-import { PasswordService } from 'src/auth/password.service';
+import { HashingService } from 'src/auth/hashing.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-    private readonly passwordService: PasswordService,
+    private readonly hashService: HashingService,
   ) {}
   async add(data: RegisterDTO) {
     try {
-      data.password = await this.passwordService.hashPassword(data.password);
+      data.password = await this.hashService.hash(data.password);
       const userInstance = this.usersRepository.create(data);
       const user = await this.usersRepository.save(userInstance);
       const { password, ...result } = user;

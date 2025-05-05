@@ -3,12 +3,12 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { UserModule } from 'src/user/user.module';
-import { PasswordService } from './password.service';
+import { HashingService } from './hashing.service';
 
 @Module({
   imports: [NestjsFormDataModule, forwardRef(() => UserModule)],
   controllers: [AuthController],
-  providers: [AuthService, PasswordService],
-  exports: [PasswordService],
+  providers: [AuthService, HashingService],
+  exports: [HashingService],
 })
 export class AuthModule {}
