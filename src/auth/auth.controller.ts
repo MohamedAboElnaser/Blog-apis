@@ -34,17 +34,24 @@ export class AuthController {
   @Post('/verify-email')
   @FormDataRequest()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  verify(@Body(new ValidationPipe()) body: VerifyEmailDTO) {
-    return this.authService.verify(body.email);
+  async verify(@Body() body: VerifyEmailDTO) {
+    await this.authService.verify(body);
+    return {
+      message: `Email Verified successfully , Now you can Login`,
+    };
   }
 
   @Post('/login')
   @FormDataRequest()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  login(
+  async login(
     @Body()
     body: LoginDTO,
   ) {
-    return this.authService.login(body);
+    const token = await this.authService.login(body);
+    return {
+      message: `Login successfully`,
+      token,
+    };
   }
 }
