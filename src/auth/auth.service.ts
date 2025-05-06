@@ -34,7 +34,9 @@ export class AuthService {
       if (user?.isVerified) {
         throw new BadRequestException(`${user.email} is already Verified`);
       } else {
-        throw new BadRequestException(`Something wrong with Email or Opt`);
+        throw new BadRequestException(
+          `Something wrong, Either the Email is not registered or the otp is wrong`,
+        );
       }
     }
 
