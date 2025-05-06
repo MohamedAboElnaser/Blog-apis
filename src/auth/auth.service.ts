@@ -1,16 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginDTO } from './dto/login-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Otp } from 'src/otp/entities/otp.entity';
 import { User } from 'src/user/entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
+import { HashingService } from './hashing.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Otp) private otpsRepository: Repository<Otp>,
     @InjectRepository(User) private usersRepository: Repository<User>,
+    private jwtService: JwtService,
+    private hashingService: HashingService,
   ) {}
   async verify(data: VerifyEmailDTO) {
     let user: User = null;
@@ -52,7 +61,33 @@ export class AuthService {
     await this.otpsRepository.delete({ email: data.email });
   }
 
-  login(data: LoginDTO) {
-    return 'jwt Generated';
+  async login(data: LoginDTO) {
+    /**
+     * First fetch the user record and validate that email exist and verified
+     * */
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: data.email,
+      },
+      select: {
+        id: true,
+        password: true,
+        isVerified: true,
+      },
+    });
+
+    if (!user) throw new NotFoundException('The email is not registered!');
+
+    if (!user.isVerified)
+      throw new BadRequestException(
+        'Please verify your email before logging in.',
+      );
+
+    if (!(await this.hashingService.compare(data.password, user.password)))
+      throw new UnauthorizedException('Wrong password!');
+
+    //Happy Scenario
+    const payload = { sub: user.id, email: data.email };
+    return await this.jwtService.signAsync(payload);
   }
 }
