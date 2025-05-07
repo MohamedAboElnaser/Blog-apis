@@ -4,6 +4,9 @@ import {
   Body,
   ValidationPipe,
   UsePipes,
+  Get,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { RegisterDTO } from './dto/register-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
@@ -11,6 +14,7 @@ import { LoginDTO } from './dto/login-dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -53,5 +57,11 @@ export class AuthController {
       message: `Login successfully`,
       token,
     };
+  }
+
+  @Get('/me')
+  @UseGuards(AuthGuard)
+  getMe(@Request() req) {
+    return req.user;
   }
 }
