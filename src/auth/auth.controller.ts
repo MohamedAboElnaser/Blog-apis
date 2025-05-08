@@ -7,6 +7,7 @@ import {
   Get,
   UseGuards,
   Request,
+  HttpCode,
 } from '@nestjs/common';
 import { RegisterDTO } from './dto/register-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
@@ -47,6 +48,7 @@ export class AuthController {
 
   @Post('/login')
   @FormDataRequest()
+  @HttpCode(200)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async login(
     @Body()
