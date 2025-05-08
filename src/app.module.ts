@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { Otp } from './otp/entities/otp.entity';
+import { BlogModule } from './blog/blog.module';
+import { Blog } from './blog/entities/blog.entity';
 
 @Module({
   controllers: [AppController],
@@ -23,12 +25,13 @@ import { Otp } from './otp/entities/otp.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Otp],
+        entities: [User, Otp, Blog],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true), // Default to true for development
         logger: 'simple-console',
         logging: ['log', 'info', 'error'],
       }),
     }),
+    BlogModule,
   ],
 })
 export class AppModule {}
