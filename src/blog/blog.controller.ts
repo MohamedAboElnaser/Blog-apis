@@ -10,6 +10,9 @@ import {
   ValidationPipe,
   UseGuards,
   Request,
+  ParseIntPipe,
+  HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -42,8 +45,23 @@ export class BlogController {
     return this.blogService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+  @Patch('/:id')
+  @FormDataRequest()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  update(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => {
+          throw new BadRequestException('Id parameter must be a valid number');
+        },
+      }),
+    )
+    id: number,
+    @Body() updateBlogDto: UpdateBlogDto,
+  ) {
     return this.blogService.update(+id, updateBlogDto);
   }
 
