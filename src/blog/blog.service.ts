@@ -28,7 +28,10 @@ export class BlogService {
   }
 
   async findOne(id: number) {
-    return 'this return single blog';
+    const blog = await this.blogsRepository.findOneBy({ id });
+    if (!blog) throw new NotFoundException('Blog not found');
+
+    return blog;
   }
 
   async update(id: number, authorId: number, updateBlogDto: UpdateBlogDto) {
