@@ -1,6 +1,9 @@
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -21,6 +24,10 @@ export class Blog {
 
   @Column({ default: true })
   isPublic: boolean;
+
+  @ManyToOne(() => User, (user) => user.blogs)
+  @JoinColumn({ name: 'authorId' })
+  author: User;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

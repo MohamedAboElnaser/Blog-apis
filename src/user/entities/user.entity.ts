@@ -1,8 +1,10 @@
+import { Blog } from 'src/blog/entities/blog.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -27,6 +29,9 @@ export class User {
 
   @Column({ default: false })
   isVerified?: boolean;
+
+  @OneToMany(() => Blog, (blog) => blog.author)
+  blogs: Blog[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
