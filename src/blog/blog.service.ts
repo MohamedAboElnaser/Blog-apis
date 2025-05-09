@@ -23,7 +23,7 @@ export class BlogService {
     }
   }
 
-  async findAll(authorId: number = 1) {
+  async findAll(authorId: number) {
     return await this.blogsRepository.findBy({ authorId });
   }
 

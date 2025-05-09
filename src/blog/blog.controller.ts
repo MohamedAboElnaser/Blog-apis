@@ -35,9 +35,14 @@ export class BlogController {
     });
   }
 
-  @Get()
-  findAll() {
-    return this.blogService.findAll();
+  @Get() //TODO Add pagination feature to the endpoint
+  @UseGuards(AuthGuard)
+  async findAll(@Request() req) {
+    const blogs = await this.blogService.findAll(req.user.sub);
+    return {
+      count: blogs.length,
+      blogs,
+    };
   }
 
   @Get('/:id')
