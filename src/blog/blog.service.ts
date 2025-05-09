@@ -50,7 +50,13 @@ export class BlogService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} blog`;
+  async remove(id: number, authorId: number) {
+    // Find the blog to make sure it exists
+    const blog = await this.blogsRepository.findOneBy({ id, authorId });
+
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+    await this.blogsRepository.remove(blog);
   }
 }

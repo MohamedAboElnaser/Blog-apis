@@ -65,4 +65,22 @@ export class BlogController {
   ) {
     return this.blogService.update(+id, req.user.sub, updateBlogDto);
   }
+
+  @Delete('/:id')
+  @UseGuards(AuthGuard)
+  async remove(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => {
+          throw new BadRequestException('Id parameter must be a valid number');
+        },
+      }),
+    )
+    id: number,
+    @Request() req,
+  ) {
+    await this.blogService.remove(+id, req.user.sub);
+  }
 }
