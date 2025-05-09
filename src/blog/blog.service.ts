@@ -31,9 +31,9 @@ export class BlogService {
     return 'this return single blog';
   }
 
-  async update(id: number, updateBlogDto: UpdateBlogDto) {
+  async update(id: number, authorId: number, updateBlogDto: UpdateBlogDto) {
     // Find the blog to make sure it exists
-    const blog = await this.blogsRepository.findOneBy({ id });
+    const blog = await this.blogsRepository.findOneBy({ id, authorId });
 
     if (!blog) {
       throw new NotFoundException('Blog not found');

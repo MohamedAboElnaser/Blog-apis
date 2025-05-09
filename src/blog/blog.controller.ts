@@ -61,12 +61,8 @@ export class BlogController {
     )
     id: number,
     @Body() updateBlogDto: UpdateBlogDto,
+    @Request() req,
   ) {
-    return this.blogService.update(+id, updateBlogDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogService.remove(+id);
+    return this.blogService.update(+id, req.user.sub, updateBlogDto);
   }
 }
