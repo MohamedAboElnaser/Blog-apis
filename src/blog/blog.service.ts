@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Blog } from './entities/blog.entity';
 import { Repository } from 'typeorm';
@@ -19,16 +23,31 @@ export class BlogService {
     }
   }
 
-  findAll() {
-    return `This action returns all blog`;
+  async findAll(authorId: number = 1) {
+    return await this.blogsRepository.findBy({ authorId });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} blog`;
+  async findOne(id: number) {
+    return 'this return single blog';
   }
 
-  update(id: number, updateBlogDto: UpdateBlogDto) {
-    return `This action updates a #${id} blog`;
+  async update(id: number, updateBlogDto: UpdateBlogDto) {
+    // Find the blog to make sure it exists
+    const blog = await this.blogsRepository.findOneBy({ id });
+
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    // Update the blog with the new data
+    const updatedBlog = await this.blogsRepository.update(id, updateBlogDto);
+
+    // Return the updated blog
+    if (updatedBlog.affected > 0) {
+      return await this.blogsRepository.findOneBy({ id });
+    } else {
+      throw new InternalServerErrorException('Failed to update blog');
+    }
   }
 
   remove(id: number) {
