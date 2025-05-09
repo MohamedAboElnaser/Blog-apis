@@ -40,8 +40,19 @@ export class BlogController {
     return this.blogService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('/:id')
+  findOne(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => {
+          throw new BadRequestException('Id parameter must be a valid number');
+        },
+      }),
+    )
+    id: number,
+  ) {
     return this.blogService.findOne(+id);
   }
 
