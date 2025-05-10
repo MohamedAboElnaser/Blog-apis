@@ -30,7 +30,10 @@ export class User {
   @Column({ default: false })
   isVerified?: boolean;
 
-  @OneToMany(() => Blog, (blog) => blog.author)
+  @OneToMany(() => Blog, (blog) => blog.author, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   blogs: Blog[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

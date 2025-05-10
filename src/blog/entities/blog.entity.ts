@@ -25,7 +25,7 @@ export class Blog {
   @Column({ default: true })
   isPublic: boolean;
 
-  @ManyToOne(() => User, (user) => user.blogs)
+  @ManyToOne(() => User, (user) => user.blogs, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'authorId' })
   author: User;
 
