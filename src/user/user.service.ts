@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegisterDTO } from 'src/auth/dto/register-dto';
@@ -42,5 +43,14 @@ export class UserService {
       }
       throw new InternalServerErrorException('An unexpected error occurred');
     }
+  }
+
+  async delete(userId: number) {
+    const user = await this.usersRepository.findOneBy({ id: userId });
+    if (!user) throw new NotFoundException('User not exist');
+
+    const result = await this.usersRepository.delete(userId);
+    if (result.affected === 0)
+      throw new InternalServerErrorException('Failed to delete user');
   }
 }
