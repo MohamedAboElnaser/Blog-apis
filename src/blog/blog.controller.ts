@@ -19,6 +19,7 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RequestWithUser } from 'src/auth/types/request.type';
 
 @Controller('blogs')
 export class BlogController {
@@ -28,7 +29,10 @@ export class BlogController {
   @FormDataRequest()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  create(@Body() createBlogDto: CreateBlogDto, @Request() req) {
+  create(
+    @Body() createBlogDto: CreateBlogDto,
+    @Request() req: RequestWithUser,
+  ) {
     return this.blogService.create({
       ...createBlogDto,
       authorId: req.user.sub,
@@ -37,7 +41,7 @@ export class BlogController {
 
   @Get() //TODO Add pagination feature to the endpoint
   @UseGuards(AuthGuard)
-  async findAll(@Request() req) {
+  async findAll(@Request() req: RequestWithUser) {
     const blogs = await this.blogService.findAll(req.user.sub);
     return {
       count: blogs.length,
@@ -77,7 +81,7 @@ export class BlogController {
     )
     id: number,
     @Body() updateBlogDto: UpdateBlogDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.blogService.update(+id, req.user.sub, updateBlogDto);
   }
@@ -95,7 +99,7 @@ export class BlogController {
       }),
     )
     id: number,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     await this.blogService.remove(+id, req.user.sub);
   }
