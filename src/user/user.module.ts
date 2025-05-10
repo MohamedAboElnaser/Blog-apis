@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { OtpModule } from 'src/otp/otp.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     OtpModule,
     TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule),
+    JwtModule,
   ],
   controllers: [UserController],
   providers: [UserService],
