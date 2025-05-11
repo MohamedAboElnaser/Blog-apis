@@ -60,10 +60,4 @@ export class AuthController {
       token,
     };
   }
-
-  @Get('/me')
-  @UseGuards(AuthGuard)
-  getMe(@Request() req) {
-    return req.user;
-  }
 }
