@@ -11,6 +11,7 @@ import { QueryFailedError, Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing.service';
 import { OtpService } from 'src/otp/otp.service';
 import { Otp } from 'src/otp/entities/otp.entity';
+import { UpdateUserDto } from './update.user.dto';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
       const userInstance = this.usersRepository.create(data);
       const user = await this.usersRepository.save(userInstance);
       const { password, ...result } = user;
-      // TODO generate otp
+
       const otp = this.otpService.generateOtp(6);
 
       //create otp record
@@ -52,5 +53,16 @@ export class UserService {
     const result = await this.usersRepository.delete(userId);
     if (result.affected === 0)
       throw new InternalServerErrorException('Failed to delete user');
+  }
+
+  async update(id: number, data: UpdateUserDto) {
+    //Check if the user record exist
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found!');
+
+    Object.assign(user, data);
+    const record = await this.usersRepository.save(user);
+    const { password, ...updatedUser } = record;
+    return updatedUser;
   }
 }
