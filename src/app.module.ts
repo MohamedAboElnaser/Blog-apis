@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { Otp } from './otp/entities/otp.entity';
 import { BlogModule } from './blog/blog.module';
 import { Blog } from './blog/entities/blog.entity';
+import { CommentModule } from './comment/comment.module';
+import { Comment } from './comment/entities/comment.entity';
 
 @Module({
   controllers: [AppController],
@@ -25,13 +27,14 @@ import { Blog } from './blog/entities/blog.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Otp, Blog],
+        entities: [User, Otp, Blog, Comment],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true), // Default to true for development
         logger: 'simple-console',
         logging: ['log', 'info', 'error'],
       }),
     }),
     BlogModule,
+    CommentModule,
   ],
 })
 export class AppModule {}

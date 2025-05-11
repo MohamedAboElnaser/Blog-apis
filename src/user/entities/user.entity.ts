@@ -36,6 +36,8 @@ export class User {
   })
   blogs: Blog[];
 
+  comments: Comment[];
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
