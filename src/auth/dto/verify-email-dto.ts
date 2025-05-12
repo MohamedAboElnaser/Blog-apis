@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsEmail, IsNotEmpty, IsNumber, Min, Max } from 'class-validator';
 
 export class VerifyEmailDTO {
@@ -5,9 +6,10 @@ export class VerifyEmailDTO {
   @IsNotEmpty()
   email: string;
 
+  @IsNotEmpty()
+  @Type(() => Number)
   @IsNumber()
   @Min(100000)
   @Max(999999)
-  @IsNotEmpty()
   otp: number;
 }
