@@ -16,6 +16,7 @@ import { FormDataRequest } from 'nestjs-form-data';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { AuthGuard } from './auth.guard';
+import { ResendCodeDto } from './dto/resend-otp';
 
 @Controller('auth')
 export class AuthController {
@@ -59,5 +60,12 @@ export class AuthController {
       message: `Login successfully`,
       token,
     };
+  }
+
+  @Post('/resend-verification-code')
+  @FormDataRequest()
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async resendVerificationCode(@Body() body: ResendCodeDto) {
+    return await this.authService.resendVerificationCode(body);
   }
 }

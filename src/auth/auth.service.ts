@@ -12,6 +12,8 @@ import { Otp } from 'src/otp/entities/otp.entity';
 import { User } from 'src/user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { HashingService } from './hashing.service';
+import { ResendCodeDto } from './dto/resend-otp';
+import { OtpService } from 'src/otp/otp.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +22,7 @@ export class AuthService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     private jwtService: JwtService,
     private hashingService: HashingService,
+    private otpService: OtpService,
   ) {}
   async verify(data: VerifyEmailDTO) {
     let user: User = null;
@@ -89,5 +92,28 @@ export class AuthService {
     //Happy Scenario
     const payload = { sub: user.id, email: data.email };
     return await this.jwtService.signAsync(payload);
+  }
+
+  async resendVerificationCode(data: ResendCodeDto) {
+    //Check if the the email already exist
+    const user = await this.usersRepository.findOne({
+      where: { email: data.email },
+    });
+
+    if (!user) throw new NotFoundException(`${data.email} is not registered!`);
+
+    if (user.isVerified)
+      throw new BadRequestException('Email already verified, You can login');
+
+    const otp = this.otpService.generateOtp(6);
+
+    //Add otp record or update the code if already exist
+    const otpRecord = await this.otpsRepository.upsert(
+      { email: data.email, code: otp },
+      { conflictPaths: ['email'] },
+    );
+    console.log(`otp record: ${otpRecord}`);
+    //TODO //Send the otp via email to the user
+    return otp;
   }
 }
