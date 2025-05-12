@@ -41,6 +41,33 @@ export class CommentService {
     return `This action returns a #${id} comment`;
   }
 
+  async update(
+    id: number,
+    data: {
+      blogId: number;
+      updateCommentDto: UpdateCommentDto;
+      authorId: number;
+    },
+  ) {
+    //Check if the comment exist
+    const comment = await this.commentRepository.findOne({
+      where: { id, blogId: data.blogId },
+      relations: { blog: true },
+    });
+    if (!comment)
+      throw new NotFoundException(`Comment with id ${id} not found`);
+
+    //Verify that only the comment author can updated his own
+    if (comment.authorId !== data.authorId)
+      throw new ForbiddenException(`You only can update Your own comments`);
+
+    if (!comment.blog.isPublic)
+      throw new ForbiddenException('Cannot update comments on a private blog!');
+
+    Object.assign(comment, data.updateCommentDto);
+    return await this.commentRepository.save(comment);
+  }
+
   remove(id: number) {
     return `This action removes a #${id} comment`;
   }
