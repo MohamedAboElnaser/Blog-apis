@@ -1,6 +1,6 @@
 import {
+  ForbiddenException,
   Injectable,
-  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -25,7 +25,9 @@ export class CommentService {
 
     //Make sure that blog is public
     if (!blog.isPublic)
-      throw new NotAcceptableException('Cannot comment on a private blog');
+      throw new ForbiddenException(
+        'You are not Authorized to add comment to this blog',
+      );
 
     const comment = await this.commentRepository.save(data);
     return comment;
@@ -37,10 +39,6 @@ export class CommentService {
 
   findOne(id: number) {
     return `This action returns a #${id} comment`;
-  }
-
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
   }
 
   remove(id: number) {
