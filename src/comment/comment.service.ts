@@ -55,7 +55,9 @@ export class CommentService {
       relations: { blog: true },
     });
     if (!comment)
-      throw new NotFoundException(`Comment with id ${id} not found`);
+      throw new NotFoundException(
+        `Comment with id ${id} not found on blog with id ${data.blogId}`,
+      );
 
     //Verify that only the comment author can updated his own
     if (comment.authorId !== data.authorId)
@@ -68,7 +70,14 @@ export class CommentService {
     return await this.commentRepository.save(comment);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: number, data: { authorId: number; blogId: number }) {
+    //Check if the comment exist
+    const comment = await this.commentRepository.findOne({
+      where: { id, blogId: data.blogId, authorId: data.authorId },
+    });
+
+    if (!comment) throw new NotFoundException(`Comment Not Found`);
+
+    return await this.commentRepository.remove(comment);
   }
 }
