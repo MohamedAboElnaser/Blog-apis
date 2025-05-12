@@ -66,7 +66,12 @@ export class CommentController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(+id);
+  @UseGuards(AuthGuard)
+  remove(
+    @Param('blogId') blogId: number,
+    @Param('id') id: number,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.commentService.remove(+id, { authorId: req.user.sub, blogId });
   }
 }
