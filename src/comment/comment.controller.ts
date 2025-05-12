@@ -49,8 +49,20 @@ export class CommentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  @FormDataRequest()
+  @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  update(
+    @Param('blogId') blogId: number,
+    @Param('id') id: number,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.commentService.update(+id, {
+      blogId,
+      authorId: req.user.sub,
+      updateCommentDto,
+    });
   }
 
   @Delete(':id')
