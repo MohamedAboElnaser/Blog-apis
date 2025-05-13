@@ -29,6 +29,7 @@ import {
 import { RegisterResponseDto } from './dto/register-response.dto';
 import { VerifyEmailResponseDto } from './dto/verify-email-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
+import { ResendCodeResponseDto } from './dto/resend-code.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -135,6 +136,24 @@ export class AuthController {
 
   @Post('resend-verification-code')
   @FormDataRequest()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Resend verification code',
+    description:
+      'Resend a verification code to the user email for account activation',
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: ResendCodeDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Verification code resent successfully',
+    type: ResendCodeResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Email not registered' })
+  @ApiBadRequestResponse({ description: 'Email already verified' })
+  @ApiInternalServerErrorResponse({
+    description: 'An unexpected error occurred',
+  })
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async resendVerificationCode(@Body() body: ResendCodeDto) {
     return await this.authService.resendVerificationCode(body);
