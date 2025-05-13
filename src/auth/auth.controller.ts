@@ -4,10 +4,8 @@ import {
   Body,
   ValidationPipe,
   UsePipes,
-  Get,
-  UseGuards,
-  Request,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { RegisterDTO } from './dto/register-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
@@ -15,18 +13,48 @@ import { LoginDTO } from './dto/login-dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
-import { AuthGuard } from './auth.guard';
 import { ResendCodeDto } from './dto/resend-otp';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBody,
+  ApiConflictResponse,
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiResponse,
+  ApiConsumes,
+} from '@nestjs/swagger';
+import { RegisterResponseDto } from './dto/register-response.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
+@UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
 export class AuthController {
   constructor(
     private authService: AuthService,
     private userService: UserService,
   ) {}
-  @Post('/register')
+  @Post('register')
   @FormDataRequest()
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Register a new user',
+    description:
+      'Creates a user account and sends a verification code to the provided email',
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: RegisterDTO })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description:
+      'User registered successfully, check your mail for verification',
+    type: RegisterResponseDto,
+  })
+  @ApiBadRequestResponse({ description: 'Invalid input data' })
+  @ApiConflictResponse({ description: 'Email already used' })
+  @ApiInternalServerErrorResponse({
+    description: 'An unexpected error occurred',
+  })
   async register(
     @Body()
     body: RegisterDTO,
@@ -37,7 +65,7 @@ export class AuthController {
       user,
     };
   }
-  @Post('/verify-email')
+  @Post('verify-email')
   @FormDataRequest()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async verify(@Body() body: VerifyEmailDTO) {
@@ -47,7 +75,7 @@ export class AuthController {
     };
   }
 
-  @Post('/login')
+  @Post('login')
   @FormDataRequest()
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -62,7 +90,7 @@ export class AuthController {
     };
   }
 
-  @Post('/resend-verification-code')
+  @Post('resend-verification-code')
   @FormDataRequest()
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async resendVerificationCode(@Body() body: ResendCodeDto) {
