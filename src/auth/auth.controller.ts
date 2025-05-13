@@ -23,9 +23,12 @@ import {
   ApiInternalServerErrorResponse,
   ApiResponse,
   ApiConsumes,
+  ApiUnauthorizedResponse,
+  ApiNotFoundResponse,
 } from '@nestjs/swagger';
 import { RegisterResponseDto } from './dto/register-response.dto';
 import { VerifyEmailResponseDto } from './dto/verify-email-response.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -97,8 +100,28 @@ export class AuthController {
 
   @Post('login')
   @FormDataRequest()
-  @HttpCode(200)
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'User login',
+    description:
+      'Authenticates a user and returns a JWT token for authorized API access',
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: LoginDTO })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Login successful',
+    type: LoginResponseDto,
+  })
+  @ApiUnauthorizedResponse({ description: 'Wrong password' })
+  @ApiNotFoundResponse({ description: 'Email is not registered!' })
+  @ApiBadRequestResponse({
+    description: 'Email already verified, You can login',
+  })
+  @ApiBadRequestResponse({ description: 'Email not verified' })
+  @ApiInternalServerErrorResponse({
+    description: 'An unexpected error occurred',
+  })
   async login(
     @Body()
     body: LoginDTO,
