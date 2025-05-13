@@ -25,6 +25,7 @@ import {
   ApiConsumes,
 } from '@nestjs/swagger';
 import { RegisterResponseDto } from './dto/register-response.dto';
+import { VerifyEmailResponseDto } from './dto/verify-email-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -65,9 +66,28 @@ export class AuthController {
       user,
     };
   }
+
   @Post('verify-email')
   @FormDataRequest()
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Verify user email',
+    description:
+      'Validates the verification code sent to the user email during registration',
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: VerifyEmailDTO })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Email verified successfully',
+    type: VerifyEmailResponseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid verification code or already verified email',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'An unexpected error occurred',
+  })
   async verify(@Body() body: VerifyEmailDTO) {
     await this.authService.verify(body);
     return {
