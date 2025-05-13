@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
@@ -10,6 +9,7 @@ import {
   Request,
   ValidationPipe,
   UsePipes,
+  Get,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -39,13 +39,8 @@ export class CommentController {
   }
 
   @Get()
-  findAll() {
-    return this.commentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
+  findAll(@Param('blogId') blogId: number) {
+    return this.commentService.findAll(blogId);
   }
 
   @Patch(':id')
