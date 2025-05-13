@@ -33,12 +33,14 @@ export class CommentService {
     return comment;
   }
 
-  findAll() {
-    return `This action returns all comment`;
-  }
+  async findAll(blogId: number) {
+    const blog = await this.blogRepository.findOne({
+      where: { id: blogId },
+      relations: { comments: true },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+    if (!blog) throw new NotFoundException(`Blog with id ${blogId} not found`);
+    return blog;
   }
 
   async update(
