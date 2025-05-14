@@ -9,6 +9,10 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
+  Param,
+  ParseIntPipe,
+  BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -39,5 +43,25 @@ export class UserController {
   ) {
     console.log(`UpdateUserDto data : ${updateUserDto}`);
     return await this.userService.update(req.user.sub, updateUserDto);
+  }
+
+  @Get('/:id/blogs')
+  async getUserPublicBlogs(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => {
+          throw new BadRequestException('Id parameter must be a valid number');
+        },
+      }),
+    )
+    id: number,
+  ) {
+    const blogs = await this.userService.getPublicBlogs(id);
+    return {
+      count: blogs.length,
+      blogs,
+    };
   }
 }

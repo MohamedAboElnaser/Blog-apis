@@ -12,6 +12,7 @@ import { HashingService } from 'src/auth/hashing.service';
 import { OtpService } from 'src/otp/otp.service';
 import { Otp } from 'src/otp/entities/otp.entity';
 import { UpdateUserDto } from './update.user.dto';
+import { BlogService } from 'src/blog/blog.service';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
     @InjectRepository(Otp) private otpRepository: Repository<Otp>,
     private readonly hashService: HashingService,
     private otpService: OtpService,
+    private blogService: BlogService,
   ) {}
   async add(data: RegisterDTO) {
     try {
@@ -64,5 +66,11 @@ export class UserService {
     const record = await this.usersRepository.save(user);
     const { password, ...updatedUser } = record;
     return updatedUser;
+  }
+
+  async getPublicBlogs(userId: number) {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException(`No user exist with id: ${userId}`);
+    return this.blogService.getUserPublicBlogs(userId);
   }
 }

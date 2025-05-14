@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { BlogController } from './blog.controller';
 import { NestjsFormDataModule } from 'nestjs-form-data';
@@ -10,11 +10,12 @@ import { Blog } from './entities/blog.entity';
 @Module({
   imports: [
     NestjsFormDataModule,
-    AuthModule,
+    forwardRef(() => AuthModule),
     JwtModule,
     TypeOrmModule.forFeature([Blog]),
   ],
   controllers: [BlogController],
   providers: [BlogService],
+  exports: [BlogService],
 })
 export class BlogModule {}

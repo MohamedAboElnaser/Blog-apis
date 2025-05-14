@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { OtpModule } from 'src/otp/otp.module';
 import { JwtModule } from '@nestjs/jwt';
+import { BlogModule } from 'src/blog/blog.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
     TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule),
     JwtModule,
+    BlogModule,
   ],
   controllers: [UserController],
   providers: [UserService],
