@@ -28,9 +28,11 @@ export class BlogService {
   }
 
   async findOne(id: number) {
-    const blog = await this.blogsRepository.findOneBy({ id });
+    const blog = await this.blogsRepository.findOne({
+      where: { id },
+      relations: { comments: true },
+    });
     if (!blog) throw new NotFoundException('Blog not found');
-
     return blog;
   }
 
