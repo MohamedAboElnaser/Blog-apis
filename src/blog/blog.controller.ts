@@ -103,4 +103,22 @@ export class BlogController {
   ) {
     await this.blogService.remove(+id, req.user.sub);
   }
+
+  @Get('/private-blogs/:id')
+  @UseGuards(AuthGuard)
+  findPrivateOne(
+    @Param(
+      'id',
+      new ParseIntPipe({
+        errorHttpStatusCode: HttpStatus.BAD_REQUEST,
+        exceptionFactory: () => {
+          throw new BadRequestException('Id parameter must be a valid number');
+        },
+      }),
+    )
+    id: number,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.blogService.findPrivateBlog(id, req.user.sub);
+  }
 }

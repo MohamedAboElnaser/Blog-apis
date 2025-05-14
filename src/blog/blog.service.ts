@@ -67,4 +67,16 @@ export class BlogService {
     }
     await this.blogsRepository.remove(blog);
   }
+
+  async findPrivateBlog(blogId: number, authorId: number) {
+    const blog = await this.blogsRepository.findOne({
+      where: { id: blogId, authorId, isPublic: false },
+      relations: { comments: true },
+    });
+
+    if (!blog)
+      throw new NotFoundException(`No private blog found with id ${blogId}`);
+
+    return blog;
+  }
 }
