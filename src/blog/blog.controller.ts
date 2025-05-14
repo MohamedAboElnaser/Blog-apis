@@ -25,6 +25,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
 import { Blog } from './entities/blog.entity';
@@ -90,6 +91,25 @@ export class BlogController {
   }
 
   @Get('/:id')
+  @ApiOperation({ summary: 'Get a single public blog post by ID' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Blog post retrieved successfully',
+    type: BlogResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid blog ID format',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Blog post not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Access denied to private blog',
+  })
   findOne(
     @Param(
       'id',
