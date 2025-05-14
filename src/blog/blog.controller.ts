@@ -13,6 +13,7 @@ import {
   ParseIntPipe,
   HttpStatus,
   BadRequestException,
+  HttpCode,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -173,6 +174,29 @@ export class BlogController {
 
   @Delete('/:id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Delete a blog post' })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'The blog post has been successfully deleted',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid blog ID format',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Authentication required',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden - User does not own this blog post',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Blog post not found',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param(
       'id',
