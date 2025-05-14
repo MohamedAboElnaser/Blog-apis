@@ -29,8 +29,7 @@ import {
   ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
-import { Blog } from './entities/blog.entity';
-import { BlogResponseDto } from './dto/create-blog-response.dto';
+import { BlogResponseDto } from './dto/blog-response.dto';
 import { BlogsListResponseDto } from './dto/list-user-blogs.dto';
 
 @Controller('blogs')
@@ -215,6 +214,26 @@ export class BlogController {
 
   @Get('/private-blogs/:id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get a private blog post by ID (owner only)' })
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Private blog post retrieved successfully',
+    type: BlogResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid blog ID format',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Authentication required',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Private blog post not found or does not belong to the user',
+  })
   findPrivateOne(
     @Param(
       'id',
