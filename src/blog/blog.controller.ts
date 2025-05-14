@@ -129,6 +129,31 @@ export class BlogController {
   @FormDataRequest()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
+  @ApiOperation({ summary: 'Update a blog post' })
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: UpdateBlogDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The blog post has been successfully updated',
+    type: BlogResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request - Invalid input data or blog ID',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Authentication required',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'Forbidden - User does not own this blog post',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Blog post not found',
+  })
   update(
     @Param(
       'id',
