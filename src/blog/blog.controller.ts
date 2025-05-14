@@ -29,6 +29,7 @@ import {
 } from '@nestjs/swagger';
 import { Blog } from './entities/blog.entity';
 import { BlogResponseDto } from './dto/create-blog-response.dto';
+import { BlogsListResponseDto } from './dto/list-user-blogs.dto';
 
 @Controller('blogs')
 export class BlogController {
@@ -48,11 +49,11 @@ export class BlogController {
     type: BlogResponseDto,
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Bad request - Invalid input data',
   })
   @ApiResponse({
-    status: 401,
+    status: HttpStatus.UNAUTHORIZED,
     description: 'Unauthorized - Authentication required',
   })
   create(
@@ -67,6 +68,19 @@ export class BlogController {
 
   @Get() //TODO Add pagination feature to the endpoint
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: 'Get all blogs for the current Logged in user (Public & Private)',
+  })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of blogs retrieved successfully',
+    type: BlogsListResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Authentication required',
+  })
   async findAll(@Request() req: RequestWithUser) {
     const blogs = await this.blogService.findAll(req.user.sub);
     return {
