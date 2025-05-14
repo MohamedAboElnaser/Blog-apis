@@ -40,6 +40,8 @@ export class CommentService {
     });
 
     if (!blog) throw new NotFoundException(`Blog with id ${blogId} not found`);
+    if (!blog.isPublic)
+      throw new ForbiddenException(`Blog with id ${blogId} is private`);
     return blog;
   }
 

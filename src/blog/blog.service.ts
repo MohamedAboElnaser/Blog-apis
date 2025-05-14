@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -33,6 +34,8 @@ export class BlogService {
       relations: { comments: true },
     });
     if (!blog) throw new NotFoundException('Blog not found');
+    if (!blog.isPublic)
+      throw new ForbiddenException(`Blog with id ${id} is private`);
     return blog;
   }
 
