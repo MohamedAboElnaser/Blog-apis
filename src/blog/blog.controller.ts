@@ -20,6 +20,15 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestWithUser } from 'src/auth/types/request.type';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { Blog } from './entities/blog.entity';
+import { BlogResponseDto } from './dto/create-blog-response.dto';
 
 @Controller('blogs')
 export class BlogController {
@@ -29,6 +38,23 @@ export class BlogController {
   @FormDataRequest()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @ApiOperation({ summary: 'Create a new blog post' })
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: CreateBlogDto })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'The blog post has been successfully created',
+    type: BlogResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Invalid input data',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Authentication required',
+  })
   create(
     @Body() createBlogDto: CreateBlogDto,
     @Request() req: RequestWithUser,
