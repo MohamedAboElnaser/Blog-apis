@@ -79,4 +79,8 @@ export class BlogService {
 
     return blog;
   }
+
+  async getUserPublicBlogs(authorId: number) {
+    return this.blogsRepository.find({ where: { authorId, isPublic: true } });
+  }
 }
