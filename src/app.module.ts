@@ -10,6 +10,7 @@ import { BlogModule } from './blog/blog.module';
 import { Blog } from './blog/entities/blog.entity';
 import { CommentModule } from './comment/comment.module';
 import { Comment } from './comment/entities/comment.entity';
+import { EmailModule } from './email/email.module';
 
 @Module({
   controllers: [AppController],
@@ -35,6 +36,7 @@ import { Comment } from './comment/entities/comment.entity';
     }),
     BlogModule,
     CommentModule,
+    EmailModule,
   ],
 })
 export class AppModule {}
