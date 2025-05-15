@@ -13,6 +13,7 @@ import { OtpService } from 'src/otp/otp.service';
 import { Otp } from 'src/otp/entities/otp.entity';
 import { UpdateUserDto } from './update.user.dto';
 import { BlogService } from 'src/blog/blog.service';
+import { OtpEmailService } from 'src/email/otp-email.service';
 
 @Injectable()
 export class UserService {
@@ -22,6 +23,7 @@ export class UserService {
     private readonly hashService: HashingService,
     private otpService: OtpService,
     private blogService: BlogService,
+    private otpEmailService: OtpEmailService,
   ) {}
   async add(data: RegisterDTO) {
     try {
@@ -38,7 +40,8 @@ export class UserService {
       //TODO delete this line after implementing email service
       console.log(`Generated otp for ${user.email} : ${otp}`);
 
-      // TODO send the otp via email to the client
+      // TODO  Uncomment this line at staging and production
+      // await this.otpEmailService.sendOtpEmail(data.email, otp);
       return result;
     } catch (error) {
       if (error instanceof QueryFailedError) {
