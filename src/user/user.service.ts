@@ -74,6 +74,6 @@ export class UserService {
   async getPublicBlogs(userId: number) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`No user exist with id: ${userId}`);
-    return this.blogService.getUserPublicBlogs(userId);
+    return await this.blogService.getUserPublicBlogs(userId);
   }
 }
