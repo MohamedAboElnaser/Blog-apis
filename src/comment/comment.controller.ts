@@ -88,13 +88,53 @@ export class CommentController {
   @FormDataRequest()
   @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  update(
+  @ApiOperation({
+    summary: 'Update a comment',
+    description:
+      'Update an existing comment on a blog. Only the comment author can modify their own comments.',
+  })
+  @ApiBearerAuth('JWT-auth')
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiParam({
+    name: 'blogId',
+    type: 'number',
+    description: 'ID of the blog containing the comment',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'number',
+    description: 'ID of the comment to update',
+  })
+  @ApiBody({ type: UpdateCommentDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Comment successfully updated',
+    type: CommentResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - User not authenticated',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description:
+      'Forbidden - User is not the author of the comment or blog is private',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Not Found - Comment or blog does not exist',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request - Invalid input data',
+  })
+  async update(
     @Param('blogId') blogId: number,
     @Param('id') id: number,
     @Body() updateCommentDto: UpdateCommentDto,
     @Request() req: RequestWithUser,
   ) {
-    return this.commentService.update(+id, {
+    return await this.commentService.update(+id, {
       blogId,
       authorId: req.user.sub,
       updateCommentDto,
