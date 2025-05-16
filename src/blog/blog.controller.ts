@@ -28,10 +28,12 @@ import {
   ApiOperation,
   ApiParam,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { BlogResponseDto } from './dto/blog-response.dto';
 import { BlogsListResponseDto } from './dto/list-user-blogs.dto';
 
+@ApiTags('Blogs')
 @Controller('blogs')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
