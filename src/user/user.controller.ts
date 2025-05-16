@@ -23,7 +23,9 @@ import {
   ApiOperation,
   ApiResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
+import { BlogResponseDto } from 'src/blog/dto/blog-response.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -46,6 +48,32 @@ export class UserController {
   }
 
   @Get('/:id/blogs')
+  @ApiOperation({
+    summary: "Get user's public blogs",
+    description: 'Retrieves all public blogs created by a specific user',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Public blogs retrieved successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        count: { type: 'number', example: 1 },
+        blogs: {
+          type: 'array',
+          items: { $ref: getSchemaPath(BlogResponseDto) },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Not Found - User does not exist',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request - Invalid user ID format',
+  })
   async getUserPublicBlogs(
     @Param(
       'id',
