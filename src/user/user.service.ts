@@ -60,6 +60,9 @@ export class UserService {
     const result = await this.usersRepository.delete(userId);
     if (result.affected === 0)
       throw new InternalServerErrorException('Failed to delete user');
+
+    //Delete user image from the cloud if it exists
+    if (user.photo_url) await this.uploadService.deleteFile(user.photo_url);
   }
 
   async update(id: number, data: UpdateUserDto) {
