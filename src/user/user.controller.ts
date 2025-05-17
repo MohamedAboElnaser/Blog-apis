@@ -23,6 +23,8 @@ import { RequestWithUser } from 'src/auth/types/request.type';
 import { UpdateUserDto } from './update.user.dto';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -30,6 +32,8 @@ import {
 } from '@nestjs/swagger';
 import { BlogResponseDto } from 'src/blog/dto/blog-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadProfilePictureResponseDto } from './dto/upload-profile-picture.response.dto';
+import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.request.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -128,6 +132,30 @@ export class UserController {
   }
 
   @Post('profile-picture')
+  @ApiOperation({
+    summary: 'Upload profile picture',
+    description:
+      "Upload or replace the authenticated user's profile picture (max 5MB)",
+  })
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Profile picture uploaded successfully',
+    type: UploadProfilePictureResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'Bad Request - No file uploaded or file size exceeds 5MB or file uploaded is not an image',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - User not authenticated',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: UploadProfilePictureRequestDto,
+  })
   @UseGuards(AuthGuard)
   @UseInterceptors(
     FileInterceptor('image', {
