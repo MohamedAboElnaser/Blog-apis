@@ -106,4 +106,16 @@ export class UserService {
 
     return url;
   }
+
+  async getUserData(userId: number) {
+    return await this.usersRepository.findOne({
+      where: { id: userId },
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        photo_url: true,
+      },
+    });
+  }
 }

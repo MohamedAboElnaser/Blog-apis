@@ -40,8 +40,9 @@ import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.req
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('/me')
-  get() {
-    throw new NotImplementedException();
+  @UseGuards(AuthGuard)
+  async get(@Request() req: RequestWithUser) {
+    return await this.userService.getUserData(req.user.sub);
   }
 
   @Patch('/me')
