@@ -13,6 +13,9 @@ import {
   ParseIntPipe,
   BadRequestException,
   HttpStatus,
+  Post,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -26,6 +29,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { BlogResponseDto } from 'src/blog/dto/blog-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -121,5 +125,27 @@ export class UserController {
     await this.userService.delete(req.user.sub);
 
     return { message: 'User Deleted successfully' };
+  }
+
+  @Post('profile-picture')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB
+      },
+    }),
+  )
+  async uploadProfilePicture(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req: RequestWithUser,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+
+    const url = await this.userService.uploadUserImage(file, req.user.sub);
+
+    return { photo_url: url };
   }
 }

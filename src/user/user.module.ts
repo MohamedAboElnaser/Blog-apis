@@ -7,6 +7,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { OtpModule } from 'src/otp/otp.module';
 import { JwtModule } from '@nestjs/jwt';
 import { BlogModule } from 'src/blog/blog.module';
+import { EmailModule } from 'src/email/email.module';
+import { UploadModule } from 'src/upload/upload.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { BlogModule } from 'src/blog/blog.module';
     forwardRef(() => AuthModule),
     JwtModule,
     BlogModule,
+    EmailModule,
+    UploadModule.register(), //Default configuration that use cloudinary as provider
   ],
   controllers: [UserController],
   providers: [UserService],

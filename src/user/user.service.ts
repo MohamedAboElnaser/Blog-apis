@@ -14,6 +14,7 @@ import { Otp } from 'src/otp/entities/otp.entity';
 import { UpdateUserDto } from './update.user.dto';
 import { BlogService } from 'src/blog/blog.service';
 import { OtpEmailService } from 'src/email/otp-email.service';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
     private otpService: OtpService,
     private blogService: BlogService,
     private otpEmailService: OtpEmailService,
+    private uploadService: UploadService,
   ) {}
   async add(data: RegisterDTO) {
     try {
@@ -75,5 +77,30 @@ export class UserService {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`No user exist with id: ${userId}`);
     return await this.blogService.getUserPublicBlogs(userId);
+  }
+
+  async uploadUserImage(file: Express.Multer.File, userId: number) {
+    //First fetch the user record
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      select: { photo_url: true },
+    });
+
+    // Delete the image if it's already uploaded
+    if (user.photo_url) await this.uploadService.deleteFile(user.photo_url);
+
+    const url = await this.uploadService.uploadFile(
+      file,
+      'uploads',
+      `user_${userId}`,
+    );
+
+    //Save the new url
+    await this.usersRepository.save({
+      id: userId,
+      photo_url: url,
+    });
+
+    return url;
   }
 }
