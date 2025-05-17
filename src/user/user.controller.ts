@@ -2,7 +2,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotImplementedException,
   UseGuards,
   Request,
   Patch,
@@ -40,6 +39,24 @@ import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.req
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get('/me')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Return current authenticated user data',
+    description:
+      'Retrieves the profile information of the currently authenticated user',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User data retrieved successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - User not authenticated',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Not Found - User does not exist',
+  })
   @UseGuards(AuthGuard)
   async get(@Request() req: RequestWithUser) {
     return await this.userService.getUserData(req.user.sub);
