@@ -63,6 +63,29 @@ export class UserController {
   }
 
   @Patch('/me')
+  @ApiOperation({
+    summary: 'Update user profile',
+    description:
+      'Updates the profile information of the currently authenticated user',
+  })
+  @ApiConsumes('application/json', 'multipart/form-data')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User profile updated successfully',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - User not authenticated',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad Request - Invalid data provided',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Not Found - User does not exist',
+  })
+  @ApiBody({ type: UpdateUserDto })
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @UseGuards(AuthGuard)
   async update(
