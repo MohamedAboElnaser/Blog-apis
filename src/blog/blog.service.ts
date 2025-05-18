@@ -31,11 +31,30 @@ export class BlogService {
   async findOne(id: number) {
     const blog = await this.blogsRepository.findOne({
       where: { id },
-      relations: { comments: true },
+      relations: ['comments', 'comments.author'],
+      select: {
+        body: true,
+        id: true,
+        title: true,
+        isPublic: true,
+        createdAt: true,
+        comments: {
+          id: true,
+          body: true,
+          createdAt: true,
+          author: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            photo_url: true,
+          },
+        },
+      },
     });
     if (!blog) throw new NotFoundException('Blog not found');
     if (!blog.isPublic)
       throw new ForbiddenException(`Blog with id ${id} is private`);
+    console.log(`Blog object: ${JSON.stringify(blog)}`);
     return blog;
   }
 
