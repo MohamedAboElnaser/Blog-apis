@@ -187,6 +187,17 @@ export class AuthController {
 
   @Post('reset-password')
   @FormDataRequest()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Reset password',
+    description: 'Sets a new password using the reset token',
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: ResetPasswordDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password reset successful',
+  })
   async resetPassword(@Body() body: ResetPasswordDto) {
     await this.authService.resetPassword(body.code, body.email, body.password);
     return {
