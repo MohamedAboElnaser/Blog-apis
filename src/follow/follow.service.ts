@@ -39,4 +39,13 @@ export class FollowService {
 
     return following.firstName;
   }
+
+  async unfollow(followerId: number, followingId: number) {
+    const result = await this.followRepo.delete({ followerId, followingId });
+    if (result.affected === 0) {
+      throw new NotFoundException(
+        `You do not follow any user with id: ${followingId}`,
+      );
+    }
+  }
 }

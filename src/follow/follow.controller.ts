@@ -1,5 +1,7 @@
 import {
   Controller,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -23,6 +25,19 @@ export class FollowController {
     const userName = await this.followService.follow(req.user.sub, followingId);
     return {
       message: `You are now following ${userName}`,
+    };
+  }
+
+  @Post(':id/unfollow')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async unfollow(
+    @Param('id', ParseIntPipe) followingId: number,
+    @Request() req: RequestWithUser,
+  ) {
+    await this.followService.unfollow(req.user.sub, followingId);
+    return {
+      message: 'Unfollowed user successfully',
     };
   }
 }
