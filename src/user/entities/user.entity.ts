@@ -1,4 +1,5 @@
 import { Blog } from 'src/blog/entities/blog.entity';
+import { Follow } from 'src/follow/entities/follow.entity';
 import {
   Entity,
   Column,
@@ -43,4 +44,10 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @OneToMany(() => Follow, (follow) => follow.follower)
+  following: Follow[];
+
+  @OneToMany(() => Follow, (follow) => follow.following)
+  followers: Follow[];
 }
