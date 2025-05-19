@@ -23,6 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FollowingsResponseDto } from './dto/followings-response.dto';
+import { FollowersResponseDto } from './dto/followers-response.dto';
 
 @ApiTags('Users - Follow')
 @Controller('users')
@@ -118,6 +119,7 @@ export class FollowController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'List of followers returned successfully',
+    type: FollowersResponseDto,
   })
   async getFollowers(
     @Param('id', ParseIntPipe) userId: number,
