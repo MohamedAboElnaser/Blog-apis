@@ -52,4 +52,13 @@ export class FollowController {
   ) {
     return await this.followService.getFollowers(userId, page, limit);
   }
+
+  @Get(':id/followings')
+  async getFollowings(
+    @Param('id', ParseIntPipe) userId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    return await this.followService.getFollowings(userId, page, limit);
+  }
 }

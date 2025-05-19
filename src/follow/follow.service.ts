@@ -82,4 +82,37 @@ export class FollowService {
       },
     };
   }
+
+  async getFollowings(userId: number, page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    const [follows, total] = await this.followRepo.findAndCount({
+      where: { followerId: userId },
+      relations: ['following'],
+      skip,
+      take: limit,
+      select: {
+        following: {
+          id: true,
+          firstName: true,
+          photo_url: true,
+        },
+      },
+    });
+
+    const followingsArray = follows.map((follow) => ({
+      id: follow.following.id,
+      firstName: follow.following.firstName,
+      photo_url: follow.following.photo_url,
+    }));
+
+    return {
+      followings: followingsArray,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
 }
