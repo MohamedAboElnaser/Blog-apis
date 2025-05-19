@@ -19,4 +19,14 @@ export class OtpEmailService {
 
     return await this.emailService.sendEmail(options);
   }
+
+  async sendPasswordResetEmail(to: string, token: string | number) {
+    const options: EmailOptions = {
+      to,
+      subject: 'Your Password Rest Code',
+      html: this.templateService.getPasswordResetTemplate(token),
+    };
+
+    return await this.emailService.sendEmail(options);
+  }
 }

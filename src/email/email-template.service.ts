@@ -14,4 +14,17 @@ export class EmailTemplateService {
       </div>
     `;
   }
+
+  getPasswordResetTemplate(token: number | string) {
+    return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
+      <h2 style="color: #333; text-align: center;">Password Reset</h2>
+      <p>You have requested to reset your password. Please use the following code to confirm your reset request:</p>
+      <div style="background-color: #f8f8f8; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+        ${token}
+      </div>
+      <p>If you didn't request this password reset, please ignore this email or contact support.</p>
+    </div>
+  `;
+  }
 }
