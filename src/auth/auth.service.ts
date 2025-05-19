@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { HashingService } from './hashing.service';
 import { ResendCodeDto } from './dto/resend-otp';
 import { OtpService } from 'src/otp/otp.service';
+import { OtpEmailService } from 'src/email/otp-email.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     private jwtService: JwtService,
     private hashingService: HashingService,
     private otpService: OtpService,
+    private emailService: OtpEmailService,
   ) {}
   async verify(data: VerifyEmailDTO) {
     let user: User = null;
@@ -115,5 +117,29 @@ export class AuthService {
     console.log(`otp record: ${otpRecord}`);
     //TODO //Send the otp via email to the user
     return otp;
+  }
+
+  async requestResetPassword(email: string) {
+    //Make sure user exist
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException(`${email} is not registered`);
+
+    //Generate otp
+    const otp = this.otpService.generateOtp(6);
+
+    //Save otp at db
+    await this.otpsRepository.upsert(
+      { email, code: otp },
+      { conflictPaths: ['email'] },
+    );
+
+    //Send Email with otp to user
+    //TODO Uncomment this line in Staging and production environment
+    // await this.emailService.sendPasswordResetEmail(email, otp);
+
+    // Only log OTP in development environment
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`OTP for ${email}: ${otp}`);
+    }
   }
 }
