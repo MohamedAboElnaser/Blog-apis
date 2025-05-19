@@ -22,6 +22,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FollowingsResponseDto } from './dto/followings-response.dto';
 
 @ApiTags('Users - Follow')
 @Controller('users')
@@ -127,6 +128,34 @@ export class FollowController {
   }
 
   @Get(':id/followings')
+  @ApiOperation({
+    summary: 'Get user followings',
+    description:
+      'Get the users that a specific user is following with pagination',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the user whose followings to retrieve',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of results per page',
+    type: Number,
+    required: false,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of followings returned successfully',
+    type: FollowingsResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
   async getFollowings(
     @Param('id', ParseIntPipe) userId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
