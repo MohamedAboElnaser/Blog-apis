@@ -31,6 +31,7 @@ import { VerifyEmailResponseDto } from './dto/verify-email-response.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { ResendCodeResponseDto } from './dto/resend-code.dto';
 import { RequestPasswordResetDto } from './dto/request-pass-reset.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -169,6 +170,15 @@ export class AuthController {
     await this.authService.requestResetPassword(body.email);
     return {
       message: `Password reset instructions sent to ${body.email}`,
+    };
+  }
+
+  @Post('reset-password')
+  @FormDataRequest()
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    await this.authService.resetPassword(body.code, body.email, body.password);
+    return {
+      message: `Password has been reset successfully , you can login with the new password`,
     };
   }
 }

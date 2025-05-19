@@ -142,4 +142,22 @@ export class AuthService {
       console.log(`OTP for ${email}: ${otp}`);
     }
   }
+
+  async resetPassword(code: number, email: string, newPassword: string) {
+    //Validate the otp code
+    const otpRecord = await this.otpsRepository.findOne({
+      where: { code, email },
+    });
+    if (!otpRecord)
+      throw new NotFoundException(
+        `Make sure that you request Reset password code, or issue one first`,
+      );
+
+    //Hash and save the new password
+    const password = await this.hashingService.hash(newPassword);
+    await this.usersRepository.update({ email }, { password });
+
+    //Delete optRecord
+    await this.otpsRepository.delete({ email });
+  }
 }
