@@ -156,6 +156,9 @@ export class AuthController {
   })
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async resendVerificationCode(@Body() body: ResendCodeDto) {
-    return await this.authService.resendVerificationCode(body);
+    await this.authService.resendVerificationCode(body);
+    return {
+      message: 'Verification code resent successfully, check your email',
+    };
   }
 }
