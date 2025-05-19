@@ -18,6 +18,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -92,6 +93,31 @@ export class FollowController {
   }
 
   @Get(':id/followers')
+  @ApiOperation({
+    summary: 'Get user followers',
+    description: 'Get the followers of a user with pagination',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the user whose followers to retrieve',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of results per page',
+    type: Number,
+    required: false,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of followers returned successfully',
+  })
   async getFollowers(
     @Param('id', ParseIntPipe) userId: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
