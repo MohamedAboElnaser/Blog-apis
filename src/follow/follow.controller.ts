@@ -60,6 +60,25 @@ export class FollowController {
   }
 
   @Post(':id/unfollow')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Unfollow a user',
+    description: 'Unfollow a user by their ID',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the user to unfollow',
+    type: Number,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Successfully unfollowed the user',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Not following the specified user',
+  })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   async unfollow(
