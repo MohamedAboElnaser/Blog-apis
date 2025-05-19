@@ -1,10 +1,13 @@
 import {
   Controller,
+  DefaultValuePipe,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -39,5 +42,14 @@ export class FollowController {
     return {
       message: 'Unfollowed user successfully',
     };
+  }
+
+  @Get(':id/followers')
+  async getFollowers(
+    @Param('id', ParseIntPipe) userId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    return await this.followService.getFollowers(userId, page, limit);
   }
 }
