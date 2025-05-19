@@ -166,6 +166,18 @@ export class AuthController {
 
   @Post('request-password-reset')
   @FormDataRequest()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Request password reset',
+    description: 'Sends a password reset token to the user email',
+  })
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({ type: RequestPasswordResetDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Password reset instructions sent to email',
+  })
+  @ApiNotFoundResponse({ description: 'Email not registered' })
   async requestPassReset(@Body() body: RequestPasswordResetDto) {
     await this.authService.requestResetPassword(body.email);
     return {
