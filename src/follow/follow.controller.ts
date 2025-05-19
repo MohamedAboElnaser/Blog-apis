@@ -14,12 +14,40 @@ import {
 import { FollowService } from './follow.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestWithUser } from 'src/auth/types/request.type';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Users - Follow')
 @Controller('users')
 export class FollowController {
   constructor(private followService: FollowService) {}
 
   @Post(':id/follow')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Follow a user',
+    description: 'Follow a user by their ID',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the user to follow',
+    type: Number,
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successfully followed the user',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request - Already following or trying to follow yourself',
+  })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'User not found' })
+  @ApiResponse({ status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' })
   @UseGuards(AuthGuard)
   async follow(
     @Param('id', ParseIntPipe) followingId: number,
