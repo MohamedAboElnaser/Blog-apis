@@ -15,6 +15,8 @@ import {
   Post,
   UseInterceptors,
   UploadedFile,
+  DefaultValuePipe,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -60,6 +62,14 @@ export class UserController {
   @UseGuards(AuthGuard)
   async get(@Request() req: RequestWithUser) {
     return await this.userService.getUserData(req.user.sub);
+  }
+
+  @Get()
+  async getUsers(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    return await this.userService.getUsers(page, limit);
   }
 
   @Patch('/me')

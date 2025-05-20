@@ -118,4 +118,23 @@ export class UserService {
       },
     });
   }
+
+  async getUsers(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    const [users, total] = await this.usersRepository.findAndCount({
+      take: limit,
+      skip,
+      select: { id: true, firstName: true, lastName: true, photo_url: true },
+    });
+
+    return {
+      users,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
 }
