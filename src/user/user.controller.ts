@@ -27,6 +27,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   getSchemaPath,
@@ -35,6 +36,7 @@ import { BlogResponseDto } from 'src/blog/dto/blog-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadProfilePictureResponseDto } from './dto/upload-profile-picture.response.dto';
 import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.request.dto';
+import { UsersResponseDto } from './dto/users-response.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -65,6 +67,29 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: 'Get all users',
+    description: 'Retrieves a paginated list of all users',
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    type: Number,
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of users per page',
+    type: Number,
+    required: false,
+    example: 10,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Users retrieved successfully',
+    type: UsersResponseDto,
+  })
   async getUsers(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
