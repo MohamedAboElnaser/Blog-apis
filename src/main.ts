@@ -10,11 +10,10 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('blogs')
     .addBearerAuth()
-    .addBasicAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
