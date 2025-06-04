@@ -24,8 +24,31 @@ export class BlogService {
     }
   }
 
-  async findAll(authorId: number) {
-    return await this.blogsRepository.findBy({ authorId });
+  async findAll(authorId: number, page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    const [blogs, total] = await this.blogsRepository.findAndCount({
+      where: { authorId },
+      order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        body: true,
+        createdAt: true,
+        isPublic: true,
+      },
+    });
+
+    return {
+      blogs,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: number) {

@@ -14,6 +14,8 @@ import {
   HttpStatus,
   BadRequestException,
   HttpCode,
+  DefaultValuePipe,
+  Query,
 } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -69,7 +71,7 @@ export class BlogController {
     });
   }
 
-  @Get() //TODO Add pagination feature to the endpoint
+  @Get()
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Get all blogs for the current Logged in user (Public & Private)',
@@ -84,12 +86,12 @@ export class BlogController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Unauthorized - Authentication required',
   })
-  async findAll(@Request() req: RequestWithUser) {
-    const blogs = await this.blogService.findAll(req.user.sub);
-    return {
-      count: blogs.length,
-      blogs,
-    };
+  async findAll(
+    @Request() req: RequestWithUser,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    return await this.blogService.findAll(req.user.sub, page, limit);
   }
 
   @Get('/:id')
