@@ -1,18 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BlogResponseDto } from './create-blog-response.dto';
 import { Type } from 'class-transformer';
+import { PaginationDto } from 'src/utils/dtos/pagination.dto';
+import { BlogDto } from './blog.dto';
 
 export class BlogsListResponseDto {
   @ApiProperty({
-    description: 'Total number of blogs found',
-    example: 1,
+    description: 'List of blogs',
+    type: [BlogDto],
   })
-  count: number;
+  @Type(() => BlogDto)
+  blogs: BlogDto[];
 
   @ApiProperty({
-    description: 'List of blogs',
-    type: [BlogResponseDto],
+    description: 'Pagination information',
+    type: PaginationDto,
   })
-  @Type(() => BlogResponseDto)
-  blogs: BlogResponseDto[];
+  pagination: PaginationDto;
 }

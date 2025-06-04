@@ -29,6 +29,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -75,6 +76,20 @@ export class BlogController {
   @UseGuards(AuthGuard)
   @ApiOperation({
     summary: 'Get all blogs for the current Logged in user (Public & Private)',
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    type: Number,
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of users per page',
+    type: Number,
+    required: false,
+    example: 10,
   })
   @ApiBearerAuth()
   @ApiResponse({
