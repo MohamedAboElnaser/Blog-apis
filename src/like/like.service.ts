@@ -37,4 +37,13 @@ export class LikeService {
 
     return { message: 'Blog liked successfully' };
   }
+
+  async unlikeBlog(userId: number, blogId: number) {
+    const result = await this.likeRepo.delete({ userId, blogId });
+    if (result.affected === 0) {
+      throw new NotFoundException('You have not liked this blog');
+    }
+
+    return { message: 'Blog unliked successfully' };
+  }
 }
