@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class PaginationDto {
   @ApiProperty({
     description: 'Total number of items',
-    example: 2,
+    example: 1,
   })
   total: number;
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaginationDto } from 'src/follow/dto/pagination.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
 export class UserDTO {
   @ApiProperty({

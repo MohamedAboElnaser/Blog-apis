@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { PaginationDto } from 'src/utils/dtos/pagination.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { BlogDto } from './blog.dto';
 
 export class BlogsListResponseDto {
