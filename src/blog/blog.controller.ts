@@ -35,6 +35,7 @@ import {
 } from '@nestjs/swagger';
 import { BlogResponseDto } from './dto/blog-response.dto';
 import { BlogsListResponseDto } from './dto/list-user-blogs.dto';
+import { BlogDetailsDto } from './dto/blog-details.dto';
 
 @ApiTags('Blogs')
 @Controller('blogs')
@@ -110,12 +111,13 @@ export class BlogController {
   }
 
   @Get('/:id')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a single public blog post by ID' })
   @ApiParam({ name: 'id', type: Number })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Blog post retrieved successfully',
-    type: BlogResponseDto,
+    type: BlogDetailsDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
