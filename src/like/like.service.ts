@@ -18,12 +18,20 @@ export class LikeService {
 
   async likeBlog(userId: number, blogId: number) {
     // Check if blog exists and is public
-    const blog = await this.blogRepo.findOneBy({ id: blogId });
+    const blog = await this.blogRepo.findOne({
+      where: { id: blogId },
+      relations: ['author'],
+    });
     if (!blog) {
       throw new NotFoundException(`Blog with id ${blogId} not found`);
     }
     if (!blog.isPublic) {
       throw new ForbiddenException('Cannot like a private blog');
+    }
+
+    // Prevent users from liking their own blogs
+    if (blog.author.id === userId) {
+      throw new BadRequestException('You cannot like your own blog');
     }
 
     // Check if already liked
