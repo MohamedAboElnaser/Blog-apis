@@ -6,6 +6,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
+import { LikeModule } from 'src/like/like.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Blog } from './entities/blog.entity';
     forwardRef(() => AuthModule),
     JwtModule,
     TypeOrmModule.forFeature([Blog]),
+    LikeModule,
   ],
   controllers: [BlogController],
   providers: [BlogService],

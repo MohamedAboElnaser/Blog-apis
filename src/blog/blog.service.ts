@@ -9,11 +9,13 @@ import { Blog } from './entities/blog.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBlogServiceDto } from './dto/create-blog-service.dto';
+import { LikeService } from 'src/like/like.service';
 
 @Injectable()
 export class BlogService {
   constructor(
     @InjectRepository(Blog) private blogsRepository: Repository<Blog>,
+    private likeService: LikeService,
   ) {}
   async create(createBlogDto: CreateBlogServiceDto) {
     try {
@@ -51,7 +53,7 @@ export class BlogService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, userId?: number) {
     const blog = await this.blogsRepository.findOne({
       where: { id },
       relations: ['comments', 'comments.author'],
@@ -77,8 +79,20 @@ export class BlogService {
     if (!blog) throw new NotFoundException('Blog not found');
     if (!blog.isPublic)
       throw new ForbiddenException(`Blog with id ${id} is private`);
-    console.log(`Blog object: ${JSON.stringify(blog)}`);
-    return blog;
+
+    //Count number of likes at this blog
+    const likesCount = await this.likeService.getBlogLikeCount(id);
+
+    // See if the current user liked this Blog
+    const isLikedByCurrentUser = await this.likeService.hasUserLikedBlog(
+      userId,
+      id,
+    );
+    return {
+      blog,
+      likesCount,
+      isLikedByCurrentUser,
+    };
   }
 
   async update(id: number, authorId: number, updateBlogDto: UpdateBlogDto) {

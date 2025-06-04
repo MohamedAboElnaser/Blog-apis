@@ -129,6 +129,7 @@ export class BlogController {
     status: HttpStatus.FORBIDDEN,
     description: 'Access denied to private blog',
   })
+  @UseGuards(AuthGuard)
   findOne(
     @Param(
       'id',
@@ -140,8 +141,9 @@ export class BlogController {
       }),
     )
     id: number,
+    @Request() req: RequestWithUser,
   ) {
-    return this.blogService.findOne(+id);
+    return this.blogService.findOne(+id, req.user.sub);
   }
 
   @Patch('/:id')
