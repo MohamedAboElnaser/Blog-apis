@@ -73,6 +73,34 @@ export class LikeController {
   @Post(':id/unlike')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Unlike a blog post',
+    description: 'Remove like from a previously liked blog post.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the blog to unlike',
+    type: Number,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Blog unliked successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: 'Blog unliked successfully' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Unauthorized - Authentication required',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Not Found - You have not liked this blog',
+  })
   async unLikeBlog(
     @Param('id', ParseIntPipe) blogId: number,
     @Request() req: RequestWithUser,
