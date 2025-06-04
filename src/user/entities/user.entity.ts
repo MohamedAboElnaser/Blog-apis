@@ -1,5 +1,7 @@
 import { Blog } from 'src/blog/entities/blog.entity';
 import { Follow } from 'src/follow/entities/follow.entity';
+import { Like } from 'src/like/entities/like.entity';
+
 import {
   Entity,
   Column,
@@ -50,4 +52,10 @@ export class User {
 
   @OneToMany(() => Follow, (follow) => follow.following)
   followers: Follow[];
+
+  @OneToMany(() => Like, (like) => like.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  likes: Like[];
 }

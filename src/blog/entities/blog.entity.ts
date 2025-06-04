@@ -1,5 +1,7 @@
 import { User } from 'src/user/entities/user.entity';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { Like } from 'src/like/entities/like.entity';
+
 import {
   Column,
   Entity,
@@ -36,6 +38,12 @@ export class Blog {
     onDelete: 'CASCADE',
   })
   comments: Comment[];
+
+  @OneToMany(() => Like, (like) => like.blog, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  likes: Like[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
