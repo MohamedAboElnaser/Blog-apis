@@ -13,6 +13,8 @@ import { Comment } from './comment/entities/comment.entity';
 import { EmailModule } from './email/email.module';
 import { FollowModule } from './follow/follow.module';
 import { Follow } from './follow/entities/follow.entity';
+import { LikeModule } from './like/like.module';
+import { Like } from './like/entities/like.entity';
 
 @Module({
   controllers: [AppController],
@@ -30,7 +32,7 @@ import { Follow } from './follow/entities/follow.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Otp, Blog, Comment, Follow],
+        entities: [User, Otp, Blog, Comment, Follow, Like],
         synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true), // Default to true for development
         logger: 'simple-console',
         logging: ['log', 'info', 'error'],
@@ -40,6 +42,7 @@ import { Follow } from './follow/entities/follow.entity';
     CommentModule,
     EmailModule,
     FollowModule,
+    LikeModule,
   ],
 })
 export class AppModule {}
