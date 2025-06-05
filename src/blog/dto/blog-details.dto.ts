@@ -1,13 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BlogWithComments } from './blog-with-comments.dto';
+import { BlogWithAuthorDto } from './blog-with-author.dto';
 
 export class BlogDetailsDto {
   @ApiProperty({
     description: 'Blog object',
-    type: [BlogWithComments],
+    type: BlogWithAuthorDto,
   })
-  blog: BlogWithComments;
+  blog: BlogWithAuthorDto;
 
+  @ApiProperty({
+    description: 'Number of Comments on this blog',
+    example: 15,
+  })
+  commentsCount: number;
   @ApiProperty({
     description: 'Number of likes on this blog',
     example: 15,
