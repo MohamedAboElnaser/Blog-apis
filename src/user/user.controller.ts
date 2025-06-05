@@ -37,6 +37,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadProfilePictureResponseDto } from './dto/upload-profile-picture.response.dto';
 import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.request.dto';
 import { UsersResponseDto } from './dto/users-response.dto';
+import { OptionalAuthGuard } from 'src/auth/optional-auth.guard';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -132,6 +133,7 @@ export class UserController {
   }
 
   @Get('/:id/blogs')
+  @UseGuards(OptionalAuthGuard)
   @ApiOperation({
     summary: "Get user's public blogs",
     description: 'Retrieves all public blogs created by a specific user',
@@ -169,12 +171,17 @@ export class UserController {
       }),
     )
     id: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    @Request() req: RequestWithUser,
   ) {
-    const blogs = await this.userService.getPublicBlogs(id);
-    return {
-      count: blogs.length,
-      blogs,
-    };
+    const currentUserId = req?.user?.sub;
+    return await this.userService.getPublicBlogs(
+      id,
+      page,
+      limit,
+      currentUserId,
+    );
   }
 
   @Delete('/me')

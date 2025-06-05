@@ -76,10 +76,20 @@ export class UserService {
     return updatedUser;
   }
 
-  async getPublicBlogs(userId: number) {
+  async getPublicBlogs(
+    userId: number,
+    page: number = 1,
+    limit: number = 10,
+    currentUserId: number,
+  ) {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException(`No user exist with id: ${userId}`);
-    return await this.blogService.getUserPublicBlogs(userId);
+    return await this.blogService.getUserPublicBlogs(
+      userId,
+      page,
+      limit,
+      currentUserId,
+    );
   }
 
   async uploadUserImage(file: Express.Multer.File, userId: number) {

@@ -137,7 +137,54 @@ export class BlogService {
     return blog;
   }
 
-  async getUserPublicBlogs(authorId: number) {
-    return this.blogsRepository.find({ where: { authorId, isPublic: true } });
+  async getUserPublicBlogs(
+    authorId: number,
+    page: number = 1,
+    limit: number = 10,
+    currentUserId?: number,
+  ) {
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.blogsRepository
+      .createQueryBuilder('blog')
+      .leftJoin('blog.likes', 'like')
+      .leftJoin('blog.comments', 'comment')
+      .leftJoin('blog.likes', 'userLike', 'userLike.userId = :currentUserId', {
+        currentUserId,
+      })
+      .select(['blog.id', 'blog.title', 'blog.body', 'blog.createdAt'])
+      .addSelect('COUNT(DISTINCT like.id)', 'likesCount')
+      .addSelect('COUNT(DISTINCT comment.id)', 'commentsCount')
+      .addSelect('COUNT(DISTINCT userLike.id) > 0', 'isLikedByCurrentUser')
+      .where('blog.authorId = :authorId', { authorId })
+      .andWhere('blog.isPublic = true')
+      .groupBy('blog.id')
+      .orderBy('blog.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit);
+
+    const [blogs, total] = await Promise.all([
+      queryBuilder.getRawAndEntities(),
+      this.blogsRepository.count({ where: { authorId, isPublic: true } }),
+    ]);
+
+    const blogsWithCounts = blogs.entities.map((blog, index) => ({
+      ...blog,
+      likesCount: parseInt(blogs.raw[index].likesCount),
+      commentsCount: parseInt(blogs.raw[index].commentsCount),
+      isLikedByCurrentUser:
+        blogs.raw[index].isLikedByCurrentUser === '1' ||
+        blogs.raw[index].isLikedByCurrentUser === true,
+    }));
+
+    return {
+      blogs: blogsWithCounts,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }
