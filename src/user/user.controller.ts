@@ -30,14 +30,14 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
-  getSchemaPath,
+  ApiParam,
 } from '@nestjs/swagger';
-import { BlogResponseDto } from 'src/blog/dto/blog-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadProfilePictureResponseDto } from './dto/upload-profile-picture.response.dto';
 import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.request.dto';
 import { UsersResponseDto } from './dto/users-response.dto';
 import { OptionalAuthGuard } from 'src/auth/optional-auth.guard';
+import { PublicBlogsResponseDto } from 'src/blog/dto/blogs-with-states.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -134,23 +134,35 @@ export class UserController {
 
   @Get('/:id/blogs')
   @UseGuards(OptionalAuthGuard)
+  @ApiBearerAuth() //this is optional
   @ApiOperation({
     summary: "Get user's public blogs",
-    description: 'Retrieves all public blogs created by a specific user',
+    description: `Retrieves all public blogs created by a specific user. Authentication is optional - if authenticated, may return additional information or personalized content.`,
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    type: Number,
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of items per page',
+    type: Number,
+    required: false,
+    example: 10,
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'User ID to retrieve blogs for',
+    type: Number,
+    example: 1,
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Public blogs retrieved successfully',
-    schema: {
-      type: 'object',
-      properties: {
-        count: { type: 'number', example: 1 },
-        blogs: {
-          type: 'array',
-          items: { $ref: getSchemaPath(BlogResponseDto) },
-        },
-      },
-    },
+    type: PublicBlogsResponseDto,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
