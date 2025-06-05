@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
 import { LikeModule } from 'src/like/like.module';
+import { CommentModule } from 'src/comment/comment.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { LikeModule } from 'src/like/like.module';
     JwtModule,
     TypeOrmModule.forFeature([Blog]),
     LikeModule,
+    CommentModule,
   ],
   controllers: [BlogController],
   providers: [BlogService],

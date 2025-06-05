@@ -15,5 +15,6 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
     JwtModule,
     NestjsFormDataModule,
   ],
+  exports: [CommentService],
 })
 export class CommentModule {}
