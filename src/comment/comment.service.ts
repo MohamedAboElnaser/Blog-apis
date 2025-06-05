@@ -32,7 +32,7 @@ export class CommentService {
     const comment = await this.commentRepository.save(data);
     return comment;
   }
-
+  // TODO add pagination feature and return only the comments array not blog
   async findAll(blogId: number) {
     const blog = await this.blogRepository.findOne({
       where: { id: blogId },
@@ -83,5 +83,9 @@ export class CommentService {
     if (!comment) throw new NotFoundException(`Comment Not Found`);
 
     return await this.commentRepository.remove(comment);
+  }
+
+  async getBlogCommentsCount(blogId: number) {
+    return await this.commentRepository.count({ where: { blogId } });
   }
 }
