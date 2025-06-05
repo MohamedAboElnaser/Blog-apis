@@ -8,6 +8,8 @@ import { OtpModule } from 'src/otp/otp.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmailModule } from 'src/email/email.module';
+import { AuthGuard } from './auth.guard';
+import { OptionalAuthGuard } from './optional-auth.guard';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { EmailModule } from 'src/email/email.module';
     EmailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, HashingService],
-  exports: [HashingService],
+  providers: [AuthService, HashingService, AuthGuard, OptionalAuthGuard],
+  exports: [HashingService, AuthGuard],
 })
 export class AuthModule {}
