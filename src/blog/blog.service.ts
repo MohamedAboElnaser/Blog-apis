@@ -56,13 +56,19 @@ export class BlogService {
   async findOne(id: number, userId?: number) {
     const blog = await this.blogsRepository.findOne({
       where: { id },
-      relations: ['comments', 'comments.author'],
+      relations: ['comments', 'comments.author', 'author'],
       select: {
         body: true,
         id: true,
         title: true,
         isPublic: true,
         createdAt: true,
+        author: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          photo_url: true,
+        },
         comments: {
           id: true,
           body: true,
