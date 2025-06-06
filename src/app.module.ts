@@ -15,6 +15,7 @@ import { FollowModule } from './follow/follow.module';
 import { Follow } from './follow/entities/follow.entity';
 import { LikeModule } from './like/like.module';
 import { Like } from './like/entities/like.entity';
+import { SeederModule } from './database/seeders/seeder.module';
 
 @Module({
   controllers: [AppController],
@@ -43,6 +44,7 @@ import { Like } from './like/entities/like.entity';
     EmailModule,
     FollowModule,
     LikeModule,
+    SeederModule,
   ],
 })
 export class AppModule {}
