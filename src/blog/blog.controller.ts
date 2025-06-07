@@ -36,6 +36,7 @@ import {
 import { BlogResponseDto } from './dto/blog-response.dto';
 import { BlogsListResponseDto } from './dto/list-user-blogs.dto';
 import { BlogDetailsDto } from './dto/blog-details.dto';
+import { BlogWithAuthorId } from './dto/blog-with-authorID.dto';
 
 @ApiTags('Blogs')
 @Controller('blogs')
@@ -159,7 +160,7 @@ export class BlogController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'The blog post has been successfully updated',
-    type: BlogResponseDto,
+    type: BlogWithAuthorId,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
