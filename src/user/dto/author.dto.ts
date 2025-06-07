@@ -21,7 +21,7 @@ export class AuthorDto {
 
   @ApiProperty({
     description: 'Profile photo URL of the author',
-    example: 'https://example.com/photos/john-doe.jpg',
+    example: 'https://avatar.iran.liara.run/public/1',
   })
   photo_url: string;
 }

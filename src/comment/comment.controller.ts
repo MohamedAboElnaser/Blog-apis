@@ -31,7 +31,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CommentResponseDto } from './dto/comment-response-dto';
-import { BlogCommentsResponseDto } from './dto/blogs-comments-response.dto';
+import { CommentWithAuthorDtoRes } from './dto/comment-with.author.dto';
 @ApiTags('Comments')
 @Controller('blogs/:blogId/comments')
 export class CommentController {
@@ -96,7 +96,7 @@ export class CommentController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Comments retrieved successfully',
-    type: BlogCommentsResponseDto,
+    type: CommentWithAuthorDtoRes,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
