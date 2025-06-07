@@ -7,9 +7,9 @@ export class CreateBlogDto {
     description: 'The title of the blog post',
     example: 'My First Blog Post',
     minLength: 2,
-    maxLength: 20,
+    maxLength: 50,
   })
-  @Length(2, 20)
+  @Length(2, 50)
   @IsNotEmpty()
   title: string;
 

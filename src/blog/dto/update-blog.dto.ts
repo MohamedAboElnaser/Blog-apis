@@ -7,11 +7,11 @@ export class UpdateBlogDto {
     description: 'The updated title of the blog post',
     example: 'My Updated Blog Title',
     minLength: 2,
-    maxLength: 20,
+    maxLength: 50,
     required: false,
   })
   @IsOptional()
-  @Length(2, 20)
+  @Length(2, 50)
   title?: string;
 
   @ApiProperty({
