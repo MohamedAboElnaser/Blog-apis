@@ -37,6 +37,7 @@ import { BlogResponseDto } from './dto/blog-response.dto';
 import { BlogsListResponseDto } from './dto/list-user-blogs.dto';
 import { BlogDetailsDto } from './dto/blog-details.dto';
 import { BlogWithAuthorId } from './dto/blog-with-authorID.dto';
+import { PrivateBlogDto } from './dto/pirvate-blog.dto';
 
 @ApiTags('Blogs')
 @Controller('blogs')
@@ -240,11 +241,15 @@ export class BlogController {
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get a private blog post by ID (owner only)' })
   @ApiBearerAuth()
-  @ApiParam({ name: 'id', type: Number })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Id of the private blog post',
+  })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Private blog post retrieved successfully',
-    type: BlogResponseDto,
+    type: PrivateBlogDto,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
