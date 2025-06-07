@@ -311,14 +311,18 @@ I'd love your contributions! Here's how you can help:
 4. **Commit your changes** (`git commit -m 'Add some amazing feature'`)
 5. **Push to the branch** (`git push origin feature/amazing-feature`)
 6. **Open a Pull Request**
+[🔝 Back to Top](#table-of-contents)
 
+---
 ### Development Guidelines
 
 - Follow the existing code style and patterns
 - Update documentation if needed
 - Use descriptive commit messages
 - Test both Docker and local setups
+[🔝 Back to Top](#table-of-contents)
 
+---
 ## Environment-Specific Features
 
 The application automatically adapts based on the `NODE_ENV`:
@@ -347,3 +351,6 @@ If you have any questions or run into issues, feel free to:
 - Open an issue on GitHub
 - Check the Swagger documentation at `/api`
 - Review the seeded data examples
+[🔝 Back to Top](#table-of-contents)
+
+---
