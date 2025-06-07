@@ -32,8 +32,9 @@ export class CommentService {
     const comment = await this.commentRepository.save(data);
     return comment;
   }
-  // TODO add pagination feature and return only the comments array not blog
-  async findAll(blogId: number) {
+
+  async findAll(blogId: number, page: number = 1, limit: number = 10) {
+    // Verify that blog exist and is Public
     const blog = await this.blogRepository.findOne({
       where: { id: blogId },
       relations: { comments: true },
@@ -42,7 +43,8 @@ export class CommentService {
     if (!blog) throw new NotFoundException(`Blog with id ${blogId} not found`);
     if (!blog.isPublic)
       throw new ForbiddenException(`Blog with id ${blogId} is private`);
-    return blog;
+
+    return await this.getBlogComments(blogId, page, limit);
   }
 
   async update(
@@ -87,5 +89,41 @@ export class CommentService {
 
   async getBlogCommentsCount(blogId: number) {
     return await this.commentRepository.count({ where: { blogId } });
+  }
+
+  private async getBlogComments(
+    blogId: number,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const skip = (page - 1) * limit;
+    const [comments, total] = await this.commentRepository.findAndCount({
+      where: { blogId },
+      relations: { author: true },
+      order: { createdAt: 'DESC' },
+      skip,
+      take: limit,
+      select: {
+        body: true,
+        id: true,
+        createdAt: true,
+        author: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          photo_url: true,
+        },
+      },
+    });
+
+    return {
+      comments,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }

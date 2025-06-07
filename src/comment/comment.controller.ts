@@ -11,6 +11,9 @@ import {
   UsePipes,
   Get,
   HttpStatus,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -103,8 +106,12 @@ export class CommentController {
     status: HttpStatus.FORBIDDEN,
     description: 'Forbidden - Blog is private',
   })
-  findAll(@Param('blogId') blogId: number) {
-    return this.commentService.findAll(blogId);
+  findAll(
+    @Param('blogId') blogId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.commentService.findAll(blogId, page, limit);
   }
 
   @Patch(':id')
