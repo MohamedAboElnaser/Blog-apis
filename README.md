@@ -84,6 +84,7 @@ I've implemented a flexible email system using the **Factory Pattern** that allo
 - **Development**: Mailtrap (for testing)
 - **Staging**: SendGrid
 - **Production**: Brevo
+
   The beauty of this approach is that you can easily add new email providers without changing existing code - just implement the [`EmailProvider`](src/email/interfaces/email-provider.interface.ts) interface!
 
 ### Configurable Upload Module
@@ -181,6 +182,7 @@ nano .env  # or use your preferred editor
 ```
 
 4. **Database Setup**
+
    Make sure your MySQL database is running and create the database specified in your .env file.
 
 5. **Run the application**
@@ -236,9 +238,9 @@ Once the application is running, visit `http://localhost:3000/api` to access the
 
 - `GET /blogs` - Get user's blogs (authenticated)
 - `POST /blogs` - Create a new blog
-- `GET /blogs/public` - Get all public blogs
+- `GET /blogs/` - Get all public blogs 
 - `GET /blogs/:id` - Get specific blog details
-- `PUT /blogs/:id` - Update blog
+- `PATCH /blogs/:id` - Update blog
 - `DELETE /blogs/:id` - Delete blog
 
 ### User & Social Features
