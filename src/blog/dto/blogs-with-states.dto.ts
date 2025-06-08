@@ -26,7 +26,7 @@ export class PublicBlogsResponseDto {
     description: 'Blogs Array',
     type: [BlogWithStatsDto],
   })
-  blog: BlogWithStatsDto;
+  blogs: BlogWithStatsDto;
 
   @ApiProperty({
     description: 'Pagination Object',
