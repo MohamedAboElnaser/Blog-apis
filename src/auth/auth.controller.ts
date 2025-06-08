@@ -118,9 +118,6 @@ export class AuthController {
   })
   @ApiUnauthorizedResponse({ description: 'Wrong password' })
   @ApiNotFoundResponse({ description: 'Email is not registered!' })
-  @ApiBadRequestResponse({
-    description: 'Email already verified, You can login',
-  })
   @ApiBadRequestResponse({ description: 'Email not verified' })
   @ApiInternalServerErrorResponse({
     description: 'An unexpected error occurred',
