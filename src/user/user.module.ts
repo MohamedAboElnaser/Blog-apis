@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { BlogModule } from 'src/blog/blog.module';
 import { EmailModule } from 'src/email/email.module';
 import { UploadModule } from 'src/upload/upload.module';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UploadModule } from 'src/upload/upload.module';
     BlogModule,
     EmailModule,
     UploadModule.register(), //Default configuration that use cloudinary as provider
+    NestjsFormDataModule,
   ],
   controllers: [UserController],
   providers: [UserService],
