@@ -20,6 +20,12 @@ export class UserDTO {
   lastName: string;
 
   @ApiProperty({
+    description: 'User Bio',
+    example: 'Backend Engineer ...',
+  })
+  bio: string;
+
+  @ApiProperty({
     description: 'User profile photo URL',
     example: 'https://example.com/photos/user_1.jpg',
   })

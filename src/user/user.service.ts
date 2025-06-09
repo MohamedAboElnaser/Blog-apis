@@ -136,7 +136,13 @@ export class UserService {
     const [users, total] = await this.usersRepository.findAndCount({
       take: limit,
       skip,
-      select: { id: true, firstName: true, lastName: true, photo_url: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        bio: true,
+        photo_url: true,
+      },
     });
 
     return {
