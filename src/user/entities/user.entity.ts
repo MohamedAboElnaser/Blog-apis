@@ -24,10 +24,13 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column({ nullable: true })
+  bio?: string;
+
   @Column()
   password: string;
 
-  @Column({ default: '' })
+  @Column({ default: 'https://avatar.iran.liara.run/public/1' })
   photo_url: string;
 
   @Column({ default: false })
