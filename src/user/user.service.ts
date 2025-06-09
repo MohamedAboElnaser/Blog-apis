@@ -121,9 +121,11 @@ export class UserService {
     return await this.usersRepository.findOne({
       where: { id: userId },
       select: {
+        id: true,
         firstName: true,
         lastName: true,
         email: true,
+        bio: true,
         photo_url: true,
       },
     });

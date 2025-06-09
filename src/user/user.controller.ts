@@ -40,6 +40,7 @@ import { OptionalAuthGuard } from 'src/auth/optional-auth.guard';
 import { PublicBlogsResponseDto } from 'src/blog/dto/blogs-with-states.dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { UserDto } from './dto/user.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -55,6 +56,7 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'User data retrieved successfully',
+    type: UserProfileDto,
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
