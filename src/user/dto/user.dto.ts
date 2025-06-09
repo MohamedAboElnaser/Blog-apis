@@ -13,6 +13,12 @@ export class UserDto {
   @ApiProperty({ example: 'Doe' })
   lastName: string;
 
+  @ApiProperty({
+    example: 'Backend engineer | pla pla pla ',
+    description: 'Bio of the user',
+  })
+  bio: string;
+
   @ApiProperty({ example: false })
   isVerified: boolean;
 

@@ -38,6 +38,8 @@ import { UploadProfilePictureRequestDto } from './dto/upload-profile-picture.req
 import { UsersResponseDto } from './dto/users-response.dto';
 import { OptionalAuthGuard } from 'src/auth/optional-auth.guard';
 import { PublicBlogsResponseDto } from 'src/blog/dto/blogs-with-states.dto';
+import { FormDataRequest } from 'nestjs-form-data';
+import { UserDto } from './dto/user.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -108,6 +110,7 @@ export class UserController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'User profile updated successfully',
+    type: UserDto,
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
@@ -122,13 +125,13 @@ export class UserController {
     description: 'Not Found - User does not exist',
   })
   @ApiBody({ type: UpdateUserDto })
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @FormDataRequest()
   @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async update(
     @Body() updateUserDto: UpdateUserDto,
     @Request() req: RequestWithUser,
   ) {
-    console.log(`UpdateUserDto data : ${updateUserDto}`);
     return await this.userService.update(req.user.sub, updateUserDto);
   }
 
