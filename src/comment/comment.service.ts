@@ -111,6 +111,7 @@ export class CommentService {
           id: true,
           firstName: true,
           lastName: true,
+          bio: true,
           photo_url: true,
         },
       },

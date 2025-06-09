@@ -27,6 +27,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -92,6 +93,20 @@ export class CommentController {
     name: 'blogId',
     type: 'number',
     description: 'ID of the blog to get comments from',
+  })
+  @ApiQuery({
+    name: 'page',
+    description: 'Page number for pagination',
+    type: Number,
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'Number of comments per page',
+    type: Number,
+    required: false,
+    example: 10,
   })
   @ApiResponse({
     status: HttpStatus.OK,

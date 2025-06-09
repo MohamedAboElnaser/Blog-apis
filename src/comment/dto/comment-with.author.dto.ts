@@ -1,9 +1,8 @@
 import { AuthorDto } from 'src/user/dto/author.dto';
-import { CommentResponseDto } from './comment-response-dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 
-export class CommentWithAuthorDto extends CommentResponseDto {
+export class CommentWithAuthorDto {
   @ApiProperty({
     description: 'Unique identifier of the comment',
     example: 1,

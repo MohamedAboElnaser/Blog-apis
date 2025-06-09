@@ -20,6 +20,12 @@ export class AuthorDto {
   lastName: string;
 
   @ApiProperty({
+    description: 'Bio of the author',
+    example: 'Backend Engineer ...',
+  })
+  bio: string;
+
+  @ApiProperty({
     description: 'Profile photo URL of the author',
     example: 'https://avatar.iran.liara.run/public/1',
   })
