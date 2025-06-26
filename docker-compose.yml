@@ -9,12 +9,14 @@ services:
       - '3000:3000'
     env_file:
       - .env
+    environment:
+      - NODE_ENV=development
     volumes:
       - .:/app
-      - /app/node_modules
+      - node_modules_cash:/app/node_modules
     depends_on:
       - mysql
-    command: npm run start:dev
+    command: sh -c "npm install && npm run start:dev"
     networks:
       - app_network
 
@@ -34,6 +36,7 @@ services:
 
 volumes:
   mysql_data:
+  node_modules_cash:
 
 networks:
   app_network:
