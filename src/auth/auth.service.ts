@@ -110,12 +110,14 @@ export class AuthService {
     const otp = this.otpService.generateOtp(6);
 
     //Add otp record or update the code if already exist
-    const otpRecord = await this.otpsRepository.upsert(
+    await this.otpsRepository.upsert(
       { email: data.email, code: otp },
       { conflictPaths: ['email'] },
     );
-    console.log(`otp record: ${otpRecord}`);
-    //TODO //Send the otp via email to the user
+
+    //TODO Delete this log statement in production and un comment sending email
+    console.log(`otp generated: ${otp}`);
+    // await this.emailService.sendOtpEmail(data.email, otp);
     return otp;
   }
 
