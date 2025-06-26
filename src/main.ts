@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { SWAGGER_DESCRIPTION } from 'docs/swagger-description';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,7 +9,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Blog-APIs')
-    .setDescription('Blog API Documentation')
+    .setDescription(SWAGGER_DESCRIPTION)
     .setVersion('1.0')
     .addTag('blogs')
     .addBearerAuth()
