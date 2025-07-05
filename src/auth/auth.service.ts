@@ -16,6 +16,7 @@ import { ResendCodeDto } from './dto/resend-otp';
 import { OtpService } from 'src/otp/otp.service';
 import { OtpEmailService } from 'src/email/otp-email.service';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -176,5 +177,34 @@ export class AuthService {
       access_token,
       refresh_token,
     };
+  }
+
+  async extractAndVerifyCookie(
+    cookie: string,
+  ): Promise<{ email: string; sub: string }> {
+    try {
+      const payload = this.jwtService.verify(cookie, {
+        secret: this.config.get<string>('REFRESH_JWT_SECRET'),
+      });
+      return payload;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
+
+  async refreshToken(req: Request) {
+    const cookie = req.cookies['refresh_token'];
+    if (!cookie) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
+
+    const { email, sub } = await this.extractAndVerifyCookie(cookie);
+
+    // Generate new tokens
+    const { access_token, refresh_token } = await this.generateTokens(
+      email,
+      sub,
+    );
+    return { access_token, refresh_token };
   }
 }

@@ -7,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  Req,
 } from '@nestjs/common';
 import { RegisterDTO } from './dto/register-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
@@ -33,7 +34,8 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { ResendCodeResponseDto } from './dto/resend-code.dto';
 import { RequestPasswordResetDto } from './dto/request-pass-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+
 @ApiTags('Auth')
 @Controller('auth')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -222,6 +224,30 @@ export class AuthController {
     await this.authService.resetPassword(body.code, body.email, body.password);
     return {
       message: `Password has been reset successfully , you can login with the new password`,
+    };
+  }
+
+  @Post('refresh-token')
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
+    const { access_token, refresh_token } =
+      await this.authService.refreshToken(req);
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Only https in production
+      maxAge:
+        parseInt(process.env.REFRESH_TOKEN_COOKIE_EXPIRES_IN_DAYS) *
+        24 *
+        60 *
+        60 *
+        1000,
+    });
+    return {
+      message: 'Token refreshed successfully',
+      access_token,
     };
   }
 }
