@@ -6,6 +6,7 @@ import {
   UsePipes,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { RegisterDTO } from './dto/register-dto';
 import { VerifyEmailDTO } from './dto/verify-email-dto';
@@ -32,7 +33,7 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { ResendCodeResponseDto } from './dto/resend-code.dto';
 import { RequestPasswordResetDto } from './dto/request-pass-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-
+import { Response } from 'express';
 @ApiTags('Auth')
 @Controller('auth')
 @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
@@ -125,11 +126,22 @@ export class AuthController {
   async login(
     @Body()
     body: LoginDTO,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    const token = await this.authService.login(body);
+    const { access_token, refresh_token } = await this.authService.login(body);
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Only https in production
+      maxAge:
+        parseInt(process.env.REFRESH_TOKEN_COOKIE_EXPIRES_IN_DAYS) *
+        24 *
+        60 *
+        60 *
+        1000,
+    });
     return {
       message: `Login successfully`,
-      token,
+      access_token,
     };
   }
 
