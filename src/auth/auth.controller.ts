@@ -114,8 +114,19 @@ export class AuthController {
   @ApiBody({ type: LoginDTO })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Login successful',
+    description:
+      'Login successful - Returns access token and sets refresh token cookie',
     type: LoginResponseDto,
+    headers: {
+      'Set-Cookie': {
+        description: 'HTTP-only refresh token cookie',
+        schema: {
+          type: 'string',
+          example:
+            'refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp...; HttpOnly; Secure; Max-Age=604800',
+        },
+      },
+    },
   })
   @ApiUnauthorizedResponse({ description: 'Wrong password' })
   @ApiNotFoundResponse({ description: 'Email is not registered!' })

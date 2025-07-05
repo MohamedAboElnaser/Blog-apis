@@ -12,5 +12,5 @@ export class LoginResponseDto {
     example:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjE5MDEyMzQ1LCJleHAiOjE2MTkwOTg3NDV9.abc123def456',
   })
-  token: string;
+  access_token: string;
 }
