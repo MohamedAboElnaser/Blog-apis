@@ -35,6 +35,7 @@ import { ResendCodeResponseDto } from './dto/resend-code.dto';
 import { RequestPasswordResetDto } from './dto/request-pass-reset.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Response, Request } from 'express';
+import { RefreshResponseDto } from './dto/refresh-response.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -229,6 +230,30 @@ export class AuthController {
 
   @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description:
+      'Generates a new access token using the refresh token stored in HTTP-only cookie',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Token refreshed successfully',
+    type: RefreshResponseDto,
+    headers: {
+      'Set-Cookie': {
+        description: 'Updated HTTP-only refresh token cookie',
+        schema: {
+          type: 'string',
+          example:
+            'refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp...; HttpOnly; Secure; Max-Age=604800',
+        },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({
+    description:
+      'Invalid or expired refresh token, or no refresh token provided',
+  })
   async refreshToken(
     @Res({ passthrough: true }) res: Response,
     @Req() req: Request,
