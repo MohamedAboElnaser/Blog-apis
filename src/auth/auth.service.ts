@@ -15,6 +15,7 @@ import { HashingService } from './hashing.service';
 import { ResendCodeDto } from './dto/resend-otp';
 import { OtpService } from 'src/otp/otp.service';
 import { OtpEmailService } from 'src/email/otp-email.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private hashingService: HashingService,
     private otpService: OtpService,
     private emailService: OtpEmailService,
+    private config: ConfigService,
   ) {}
   async verify(data: VerifyEmailDTO) {
     let user: User = null;
@@ -92,8 +94,8 @@ export class AuthService {
       throw new UnauthorizedException('Wrong password!');
 
     //Happy Scenario
-    const payload = { sub: user.id, email: data.email };
-    return await this.jwtService.signAsync(payload);
+    //generate token and refresh-token
+    return await this.generateTokens(user.email, user.id);
   }
 
   async resendVerificationCode(data: ResendCodeDto) {
@@ -161,5 +163,18 @@ export class AuthService {
 
     //Delete optRecord
     await this.otpsRepository.delete({ email });
+  }
+
+  async generateTokens(userEmail: string, userId: string | number) {
+    const payload = { email: userEmail, sub: userId };
+    const access_token = await this.jwtService.signAsync(payload);
+    const refresh_token = await this.jwtService.signAsync(payload, {
+      secret: this.config.get<string>('REFRESH_JWT_SECRET'),
+      expiresIn: this.config.get<string | number>('REFRESH_JWT_EXPIRES_IN'),
+    });
+    return {
+      access_token,
+      refresh_token,
+    };
   }
 }
