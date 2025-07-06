@@ -21,6 +21,8 @@ A robust and scalable RESTful API for a blogging platform built with NestJS, Typ
       - [Installation Steps](#installation-steps)
     - [Environment Configuration](#environment-configuration)
   - [API Documentation](#api-documentation)
+    - [Interactive Documentation (Local)](#interactive-documentation-local)
+    - [Static Documentation (GitHub Pages)](#static-documentation-github-pages)
   - [Quick API Overview](#quick-api-overview)
     - [Authentication Endpoints](#authentication-endpoints)
     - [Blog Endpoints](#blog-endpoints)
@@ -223,7 +225,15 @@ Create a .env file based on [.env.example](./.env.example) and fill in your spec
 
 ## API Documentation
 
-Once the application is running, visit `http://localhost:3000/api` to access the interactive Swagger documentation. Here you'll find detailed information about all endpoints, request/response schemas, and can even test the API directly from the browser!
+Once the application is running, you can access the API documentation in multiple ways:
+
+### Interactive Documentation (Local)
+Visit `http://localhost:3000/api` to access the interactive Swagger documentation when running the application locally. Here you'll find detailed information about all endpoints, request/response schemas, and can even test the API directly from the browser!
+
+### Static Documentation (GitHub Pages)
+📚 **[View Static API Documentation](https://MohamedAboElnaser.github.io/blog-api/)** - Always up-to-date documentation deployed automatically with each release.
+
+> **Note**: The GitHub Pages documentation is static and doesn't allow testing endpoints directly. For interactive testing, use the local documentation or tools like Postman or Insomnia.
 
 [🔝 Back to Top](#table-of-contents)
 
