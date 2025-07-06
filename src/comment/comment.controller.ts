@@ -138,7 +138,7 @@ export class CommentController {
     description:
       'Update an existing comment on a blog. Only the comment author can modify their own comments.',
   })
-  @ApiBearerAuth('JWT-auth')
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data', 'application/json')
   @ApiParam({
     name: 'blogId',
@@ -193,7 +193,7 @@ export class CommentController {
     description:
       'Delete an existing comment from a blog. Only the comment author can delete their own comments.',
   })
-  @ApiBearerAuth('JWT-auth')
+  @ApiBearerAuth()
   @ApiParam({
     name: 'blogId',
     type: 'number',
