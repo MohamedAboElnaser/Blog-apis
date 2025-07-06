@@ -225,7 +225,7 @@ Create a .env file based on [.env.example](./.env.example) and fill in your spec
 
 ## API Documentation
 
-Once the application is running, you can access the API documentation in multiple ways:
+You can access the API documentation in two ways:
 
 ### Interactive Documentation (Local)
 
@@ -233,9 +233,9 @@ Visit `http://localhost:3000/api` to access the interactive Swagger documentatio
 
 ### Static Documentation (GitHub Pages)
 
-📚 **[View Static API Documentation](https://github.com/MohamedAboElnaser/Blog-apis)** - Always up-to-date documentation deployed automatically with each release.
+📚 **[View Static API Documentation](https://mohamedaboelnaser.github.io/Blog-apis/)** - Complete API documentation that's always available, automatically updated with each release. No need to run the application locally!
 
-> **Note**: The GitHub Pages documentation is static and doesn't allow testing endpoints directly. For interactive testing, use the local documentation or tools like Postman or Insomnia.
+> **Note**: The GitHub Pages documentation is static and doesn't allow testing endpoints directly. For interactive testing, use the local documentation after running the application.
 
 [🔝 Back to Top](#table-of-contents)
 
