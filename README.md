@@ -152,7 +152,7 @@ docker compose exec app npm run seed
 docker compose exec app npm run seed:force
 ```
 
-That's it! Your API will be available at `http://localhost:3000` 
+That's it! Your API will be available at `http://localhost:3000`
 
 ### Option 2: Local Development Setup 💻
 
@@ -228,10 +228,12 @@ Create a .env file based on [.env.example](./.env.example) and fill in your spec
 Once the application is running, you can access the API documentation in multiple ways:
 
 ### Interactive Documentation (Local)
+
 Visit `http://localhost:3000/api` to access the interactive Swagger documentation when running the application locally. Here you'll find detailed information about all endpoints, request/response schemas, and can even test the API directly from the browser!
 
 ### Static Documentation (GitHub Pages)
-📚 **[View Static API Documentation](https://MohamedAboElnaser.github.io/blog-api/)** - Always up-to-date documentation deployed automatically with each release.
+
+📚 **[View Static API Documentation](https://github.com/MohamedAboElnaser/Blog-apis)** - Always up-to-date documentation deployed automatically with each release.
 
 > **Note**: The GitHub Pages documentation is static and doesn't allow testing endpoints directly. For interactive testing, use the local documentation or tools like Postman or Insomnia.
 
