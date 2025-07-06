@@ -25,19 +25,32 @@ import { SeederModule } from './database/seeders/seeder.module';
     AuthModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        // If generating docs, use in-memory database
+        if (process.env.NODE_ENV === 'docs') {
+          return {
+            type: 'sqlite',
+            database: ':memory:',
+            entities: [], // Empty entities to avoid loading issues
+            synchronize: false,
+            logging: false,
+          };
+        }
+        // Normal database configuration
+        return {
+          type: 'mysql',
+          host: configService.get<string>('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USERNAME'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_NAME'),
+          entities: [User, Otp, Blog, Comment, Follow, Like],
+          synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true), // Default to true for development
+          logger: 'simple-console',
+          logging: ['log', 'info', 'error'],
+        };
+      },
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'mysql',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [User, Otp, Blog, Comment, Follow, Like],
-        synchronize: configService.get<boolean>('DB_SYNCHRONIZE', true), // Default to true for development
-        logger: 'simple-console',
-        logging: ['log', 'info', 'error'],
-      }),
     }),
     BlogModule,
     CommentModule,

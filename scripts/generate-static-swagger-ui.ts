@@ -10,7 +10,15 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 
 async function generateDocs() {
-  const app = await NestFactory.create(AppModule);
+  // Set environment variables to mock database connection
+  process.env.NODE_ENV = 'docs';
+  process.env.DB_TYPE = 'sqlite';
+  process.env.DB_DATABASE = ':memory:';
+  process.env.DB_SYNCHRONIZE = 'false';
+
+  const app = await NestFactory.create(AppModule, {
+    logger: false,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Blog-APIs')
@@ -31,17 +39,15 @@ async function generateDocs() {
   const html = GenerateSwaggerHTML(document);
 
   fs.writeFileSync(path.join(docsDir, 'index.html'), html);
-
   fs.writeFileSync(
     path.join(docsDir, 'swagger.json'),
     JSON.stringify(document, null, 2),
   );
-
   fs.writeFileSync(path.join(docsDir, 'swagger.yaml'), yaml.dump(document));
 
-  console.log('Documentation generated successfully!');
-  console.log('Location: docs/generated/');
-  console.log('Open: docs/generated/index.html in any browser');
+  console.log('✅ Documentation generated successfully!');
+  console.log('📁 Location: docs/generated/');
+  console.log('🌐 Open: docs/generated/index.html in any browser');
 
   await app.close();
 }
