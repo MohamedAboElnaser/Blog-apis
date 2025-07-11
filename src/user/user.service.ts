@@ -43,7 +43,7 @@ export class UserService {
       console.log(`Generated otp for ${user.email} : ${otp}`);
 
       // TODO  Uncomment this line at staging and production
-      // await this.otpEmailService.sendOtpEmail(data.email, otp);
+      await this.otpEmailService.sendOtpEmail(data.email, otp);
       return result;
     } catch (error) {
       if (error instanceof QueryFailedError) {

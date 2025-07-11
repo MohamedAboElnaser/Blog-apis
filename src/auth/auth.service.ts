@@ -120,7 +120,7 @@ export class AuthService {
 
     //TODO Delete this log statement in production and un comment sending email
     console.log(`otp generated: ${otp}`);
-    // await this.emailService.sendOtpEmail(data.email, otp);
+    await this.emailService.sendOtpEmail(data.email, otp);
     return otp;
   }
 
@@ -140,7 +140,7 @@ export class AuthService {
 
     //Send Email with otp to user
     //TODO Uncomment this line in Staging and production environment
-    // await this.emailService.sendPasswordResetEmail(email, otp);
+    await this.emailService.sendPasswordResetEmail(email, otp);
 
     // Only log OTP in development environment
     if (process.env.NODE_ENV === 'development') {
