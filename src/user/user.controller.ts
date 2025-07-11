@@ -103,6 +103,7 @@ export class UserController {
   }
 
   @Patch('/me')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Update user profile',
     description:
